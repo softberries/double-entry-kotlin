@@ -44,6 +44,12 @@ class TransferSetTest {
             error.message shouldBe expected["message"].asText()
             error.message shouldBe "transfer code 'abcde' is too long. Please limit it to 4 characters."
         }
+
+        @Test
+        fun `length counts characters like Ruby, not UTF-16 units`() {
+            shouldNotThrowAny { TransferSet.build(codeMaxLength = 2) { define("a", "b", "💰x") } }
+            shouldThrow<TransferCodeTooLongError> { TransferSet.build(codeMaxLength = 2) { define("a", "b", "💰xy") } }
+        }
     }
 
     /** `transfer_spec.rb` describe Transfer::Set. */

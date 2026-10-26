@@ -1,6 +1,5 @@
 package com.softberries.doubleentry.transfer
 
-import com.softberries.doubleentry.account.codePointCount
 import com.softberries.doubleentry.config.DoubleEntryDsl
 import com.softberries.doubleentry.errors.DuplicateTransfer
 import com.softberries.doubleentry.errors.RubyInspect
@@ -60,7 +59,8 @@ class TransferSet private constructor(
             to: String,
             code: String,
         ): TransferDefinition {
-            if (codeMaxLength != null && code.codePointCount() > codeMaxLength) {
+            // BR-006: Ruby `String#length` counts characters, hence code points rather than UTF-16 units.
+            if (codeMaxLength != null && code.codePointCount(0, code.length) > codeMaxLength) {
                 throw TransferCodeTooLongError("transfer code '$code' is too long. Please limit it to $codeMaxLength characters.")
             }
             val definition = TransferDefinition(from, to, code)
@@ -73,8 +73,6 @@ class TransferSet private constructor(
     }
 
     companion object {
-        val EMPTY: TransferSet = TransferSet(emptyMap())
-
         /** Builds a standalone set. */
         fun build(
             codeMaxLength: Int? = null,

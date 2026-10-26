@@ -52,7 +52,7 @@ class AccountSet private constructor(
             currency: String? = null,
         ): AccountDefinition {
             // BR-005: Ruby `String#length` counts characters, hence code points rather than UTF-16 units.
-            if (accountIdentifierMaxLength != null && identifier.codePointCount() > accountIdentifierMaxLength) {
+            if (accountIdentifierMaxLength != null && identifier.codePointCount(0, identifier.length) > accountIdentifierMaxLength) {
                 throw AccountIdentifierTooLongError(
                     "account identifier '$identifier' is too long. Please limit it to $accountIdentifierMaxLength characters.",
                 )
@@ -74,8 +74,6 @@ class AccountSet private constructor(
     }
 
     companion object {
-        val EMPTY: AccountSet = AccountSet(emptyMap())
-
         /** Builds a standalone set; [defaultCurrency] mirrors `Money.default_currency` (USD in the Ruby specs). */
         fun build(
             accountIdentifierMaxLength: Int? = null,
@@ -84,5 +82,3 @@ class AccountSet private constructor(
         ): AccountSet = Builder(accountIdentifierMaxLength, defaultCurrency).apply(block).build()
     }
 }
-
-internal fun String.codePointCount(): Int = codePointCount(0, length)
