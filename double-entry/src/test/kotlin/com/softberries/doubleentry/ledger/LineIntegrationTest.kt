@@ -249,6 +249,25 @@ class LineIntegrationTest : LedgerIntegrationTest() {
     }
 
     @Test
+    fun `BR-084 findIdAndCreatedAt compares and returns UTC regardless of the JVM time zone`() {
+        val original = TimeZone.getDefault()
+        try {
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Kolkata"))
+            clock.set(ORACLE_T0)
+            transferLines(5_00, account("bank"), account("cash"), "salary")
+
+            lines.findIdAndCreatedAt(
+                LineCriteria(account = "cash", createdAtFrom = ORACLE_T0, createdAtTo = ORACLE_T0),
+            ) shouldContainExactly
+                listOf(IdAndCreatedAt(2, ORACLE_T0))
+            lines.findIdAndCreatedAt(LineCriteria(createdAtFrom = ORACLE_T0.plusNanos(1_000))).shouldBeEmpty()
+            lines.findIdAndCreatedAt(LineCriteria(createdAtTo = ORACLE_T0.minusNanos(1_000))).shouldBeEmpty()
+        } finally {
+            TimeZone.setDefault(original)
+        }
+    }
+
+    @Test
     fun `metadata round-trips as jsonb with the same JSON types`() {
         val metadata = mapOf("n" to 1, "tax" to listOf("GST", "VAT"), "nested" to mapOf("a" to 1), "country" to "AU")
         val withMetadata = writer.create(newLine("bank", 0).copy(metadata = metadata))
