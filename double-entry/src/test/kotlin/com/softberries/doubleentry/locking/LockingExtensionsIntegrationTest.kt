@@ -194,6 +194,20 @@ class LockingExtensionsIntegrationTest : BalanceIntegrationTest() {
     }
 
     @Test
+    fun `a nested withRestartOnDeadlock publishes once and passes the signal through unchanged`() {
+        val deadlock = pgDeadlock()
+
+        val signal =
+            shouldThrow<RestartTransactionSignal> {
+                restartable.withRestartOnDeadlock { restartable.withRestartOnDeadlock { throw deadlock } }
+            }
+
+        signal.cause shouldBeSameInstanceAs deadlock
+        recorded.events.map { it.type } shouldContainExactly listOf(DoubleEntryEventType.DEADLOCK_RESTART)
+        infoLines() shouldContainExactly listOf("Deadlock causing restart")
+    }
+
+    @Test
     fun `a deadlock twice then success runs the block 3 times in fresh transactions, with 2 events and 2 log lines`() {
         val runs = AtomicInteger()
 

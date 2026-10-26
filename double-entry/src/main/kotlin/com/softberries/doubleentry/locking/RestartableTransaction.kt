@@ -40,6 +40,9 @@ class RestartableTransaction(
     fun <T> withRestartOnDeadlock(block: () -> T): T =
         try {
             block()
+        } catch (signal: RestartTransactionSignal) {
+            // A nested withRestartOnDeadlock already published; its cause is the deadlock, so don't classify it again.
+            throw signal
         } catch (e: Exception) {
             // Exception, not RuntimeException: Kotlin code may throw a checked SQLException straight from JDBC.
             if (!SqlStateTranslator.isDeadlock(e)) throw e
