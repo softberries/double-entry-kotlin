@@ -1,0 +1,101 @@
+{
+  "_method": "git ls-files pattern match at the inventoried commit; a category is empty only if no tracked file matches (files.txt is the complete tracked-file list)",
+  "jobs": {
+    "pattern": "(_job\\.rb$|/jobs/|sidekiq|whenever|schedule)",
+    "files": []
+  },
+  "mailers": {
+    "pattern": "(mailer|/mail)",
+    "files": []
+  },
+  "channels": {
+    "pattern": "(channel|cable)",
+    "files": []
+  },
+  "rake_tasks": {
+    "pattern": "Rakefile, *.rake",
+    "files": [
+      "Rakefile"
+    ],
+    "tasks": [
+      "rake build",
+      "rake build:checksum",
+      "rake clean",
+      "rake clobber",
+      "rake default",
+      "rake install",
+      "rake install:local",
+      "rake release[remote]",
+      "rake release:guard_clean",
+      "rake release:rubygem_push",
+      "rake release:source_control_push[remote]",
+      "rake spec"
+    ]
+  },
+  "initializers": {
+    "pattern": "initializers/",
+    "files": [],
+    "note": "only the generator TEMPLATE lib/generators/double_entry/install/templates/initializer.rb, copied into the host app by `rails g double_entry:install`"
+  },
+  "railties": {
+    "files": [
+      "lib/double_entry.rb"
+    ],
+    "note": "DoubleEntry::Railtie lib/double_entry.rb:25-33 (after_initialize requires line_metadata/line)"
+  },
+  "generators": {
+    "files": [
+      "lib/generators/double_entry/install/install_generator.rb",
+      "lib/generators/double_entry/install/templates/initializer.rb",
+      "lib/generators/double_entry/install/templates/migration.rb"
+    ]
+  },
+  "concerns": {
+    "pattern": "concerns/",
+    "files": [],
+    "modules_mixed_in": [
+      "DoubleEntry::Configurable (lib/double_entry/configurable.rb)",
+      "ActiveRecord::LockingExtensions (lib/active_record/locking_extensions.rb, extended into ActiveRecord::Base)"
+    ]
+  },
+  "service_objects": {
+    "files": [
+      "lib/double_entry/transfer.rb",
+      "lib/double_entry/balance_calculator.rb",
+      "lib/double_entry/locking.rb",
+      "lib/double_entry/validation/account_fixer.rb",
+      "lib/double_entry/validation/line_check.rb"
+    ],
+    "note": "non-AR domain classes under lib/double_entry (no app/services dir)"
+  },
+  "policies": {
+    "pattern": "polic",
+    "files": []
+  },
+  "serializers": {
+    "pattern": "serializ",
+    "files": [],
+    "note": "no serializers; LineMetadata uses an AR attribute coder SymbolWrapper (lib/double_entry/line_metadata.rb:3-16)"
+  },
+  "view_templates": {
+    "pattern": "\\.(erb|haml|slim|jbuilder)$|views/",
+    "files": []
+  },
+  "js_controllers": {
+    "pattern": "\\.(js|ts)$",
+    "files": []
+  },
+  "scripts": {
+    "files": [
+      "script/jack_hammer",
+      "script/setup.sh"
+    ]
+  },
+  "ci_and_docker": {
+    "files": [
+      ".github/workflows/ci-workflow.yml",
+      "Dockerfile",
+      "docker-compose.yml"
+    ]
+  }
+}

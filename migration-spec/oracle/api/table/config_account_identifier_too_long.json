@@ -1,0 +1,28 @@
+{
+  "id": "config_account_identifier_too_long",
+  "description": "account_identifier_max_length=5, identifier of 6 chars",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": null,
+  "exception": {
+    "class": "DoubleEntry::AccountIdentifierTooLongError",
+    "message": "account identifier 'abcdef' is too long. Please limit it to 5 characters.",
+    "ancestors": [
+      "DoubleEntry::AccountIdentifierTooLongError",
+      "DoubleEntry::DoubleEntryError",
+      "RuntimeError",
+      "StandardError"
+    ]
+  },
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_metadata": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [],
+  "sql_truncated": false
+}

@@ -1,0 +1,7 @@
+json: 121 scenarios (42 raising)
+oracle json exit=0
+table: 121 scenarios (42 raising)
+oracle table exit=0
+jack_hammer_t2000 exit=0
+jack_hammer_t2000f4 exit=0
+jack_hammer_t2000z exit=0

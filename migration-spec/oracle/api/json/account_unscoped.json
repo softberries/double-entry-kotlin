@@ -1,0 +1,23 @@
+{
+  "id": "account_unscoped",
+  "description": "DoubleEntry.account(:bank)",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": {
+    "account_instance": "#{Account account: bank scope:  currency: USD}",
+    "identifier": "bank",
+    "scope_identity": null,
+    "currency": "USD"
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [],
+  "sql_truncated": false
+}

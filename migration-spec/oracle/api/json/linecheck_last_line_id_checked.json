@@ -1,0 +1,58 @@
+{
+  "id": "linecheck_last_line_id_checked",
+  "description": "LineCheck.last_line_id_checked picks newest by created_at, 0 when none",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": {
+    "none": 0,
+    "after": 300
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_checks": [
+      {
+        "id": 1,
+        "last_line_id": 100,
+        "errors_found": false,
+        "log": "",
+        "created_at": "2026-01-15T09:57:00.000000Z",
+        "updated_at": "2026-01-15T09:57:00.000000Z"
+      },
+      {
+        "id": 2,
+        "last_line_id": 300,
+        "errors_found": false,
+        "log": "",
+        "created_at": "2026-01-15T09:59:00.000000Z",
+        "updated_at": "2026-01-15T09:59:00.000000Z"
+      },
+      {
+        "id": 3,
+        "last_line_id": 200,
+        "errors_found": false,
+        "log": "",
+        "created_at": "2026-01-15T09:58:00.000000Z",
+        "updated_at": "2026-01-15T09:58:00.000000Z"
+      }
+    ]
+  },
+  "notifications": [],
+  "sql": [
+    "DoubleEntry::Validation::LineCheck Pluck (1.3ms)  SELECT \"double_entry_line_checks\".\"last_line_id\" FROM \"double_entry_line_checks\" ORDER BY created_at DESC LIMIT $1  [[\"LIMIT\", 1]]",
+    "TRANSACTION (0.7ms)  BEGIN",
+    "DoubleEntry::Validation::LineCheck Create (2.0ms)  INSERT INTO \"double_entry_line_checks\" (\"last_line_id\", \"errors_found\", \"log\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"last_line_id\", 100], [\"errors_found\", false], [\"log\", \"\"], [\"created_at\", \"2026-01-15 09:57:00\"], [\"updated_at\", \"2026-01-15 09:57:00\"]]",
+    "TRANSACTION (2.0ms)  COMMIT",
+    "TRANSACTION (0.8ms)  BEGIN",
+    "DoubleEntry::Validation::LineCheck Create (1.8ms)  INSERT INTO \"double_entry_line_checks\" (\"last_line_id\", \"errors_found\", \"log\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"last_line_id\", 300], [\"errors_found\", false], [\"log\", \"\"], [\"created_at\", \"2026-01-15 09:59:00\"], [\"updated_at\", \"2026-01-15 09:59:00\"]]",
+    "TRANSACTION (1.8ms)  COMMIT",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::Validation::LineCheck Create (1.3ms)  INSERT INTO \"double_entry_line_checks\" (\"last_line_id\", \"errors_found\", \"log\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"last_line_id\", 200], [\"errors_found\", false], [\"log\", \"\"], [\"created_at\", \"2026-01-15 09:58:00\"], [\"updated_at\", \"2026-01-15 09:58:00\"]]",
+    "TRANSACTION (1.8ms)  COMMIT",
+    "DoubleEntry::Validation::LineCheck Pluck (0.7ms)  SELECT \"double_entry_line_checks\".\"last_line_id\" FROM \"double_entry_line_checks\" ORDER BY created_at DESC LIMIT $1  [[\"LIMIT\", 1]]"
+  ],
+  "sql_truncated": false
+}

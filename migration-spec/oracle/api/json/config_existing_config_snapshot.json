@@ -1,0 +1,185 @@
+{
+  "id": "config_existing_config_snapshot",
+  "description": "The standard oracle configuration (accounts and transfers as defined)",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": {
+    "accounts": [
+      {
+        "account": "savings",
+        "scoped": true,
+        "currency": "USD"
+      },
+      {
+        "account": "checking",
+        "scoped": true,
+        "currency": "USD"
+      },
+      {
+        "account": "btc_wallet",
+        "scoped": true,
+        "currency": "BTC"
+      },
+      {
+        "account": "bank",
+        "scoped": false,
+        "currency": "USD"
+      },
+      {
+        "account": "cash",
+        "scoped": false,
+        "currency": "USD"
+      },
+      {
+        "account": "store",
+        "scoped": false,
+        "currency": "USD"
+      },
+      {
+        "account": "liability",
+        "scoped": false,
+        "currency": "USD"
+      },
+      {
+        "account": "btc_store",
+        "scoped": false,
+        "currency": "BTC"
+      },
+      {
+        "account": "jpy_wallet",
+        "scoped": false,
+        "currency": "JPY"
+      },
+      {
+        "account": "jpy_bank",
+        "scoped": false,
+        "currency": "JPY"
+      }
+    ],
+    "transfers": [
+      {
+        "transfer": [
+          "bank",
+          "checking",
+          "deposit"
+        ]
+      },
+      {
+        "transfer": [
+          "bank",
+          "savings",
+          "deposit"
+        ]
+      },
+      {
+        "transfer": [
+          "checking",
+          "savings",
+          "save"
+        ]
+      },
+      {
+        "transfer": [
+          "savings",
+          "checking",
+          "withdraw"
+        ]
+      },
+      {
+        "transfer": [
+          "checking",
+          "checking",
+          "p2p"
+        ]
+      },
+      {
+        "transfer": [
+          "bank",
+          "cash",
+          "salary"
+        ]
+      },
+      {
+        "transfer": [
+          "bank",
+          "cash",
+          "bonus"
+        ]
+      },
+      {
+        "transfer": [
+          "cash",
+          "store",
+          "purchase"
+        ]
+      },
+      {
+        "transfer": [
+          "cash",
+          "store",
+          "layby"
+        ]
+      },
+      {
+        "transfer": [
+          "cash",
+          "bank",
+          "refund"
+        ]
+      },
+      {
+        "transfer": [
+          "bank",
+          "btc_store",
+          "mismatch"
+        ]
+      },
+      {
+        "transfer": [
+          "btc_store",
+          "btc_wallet",
+          "btc_buy"
+        ]
+      },
+      {
+        "transfer": [
+          "jpy_bank",
+          "jpy_wallet",
+          "jpy_in"
+        ]
+      },
+      {
+        "transfer": [
+          "cash",
+          "liability",
+          "repay"
+        ]
+      },
+      {
+        "transfer": [
+          "liability",
+          "cash",
+          "borrow"
+        ]
+      },
+      {
+        "transfer": [
+          "savings",
+          "savings",
+          "self"
+        ]
+      }
+    ]
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [],
+  "sql_truncated": false
+}

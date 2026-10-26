@@ -1,0 +1,857 @@
+[
+  {
+    "id": "config_duplicate_account",
+    "description": "Defining the same account identifier twice",
+    "rules": [],
+    "outcome": "raises DoubleEntry::DuplicateAccount",
+    "file": "oracle/api/json/config_duplicate_account.json"
+  },
+  {
+    "id": "config_duplicate_account_scoped_vs_unscoped",
+    "description": "Same identifier, once scoped once unscoped",
+    "rules": [],
+    "outcome": "raises DoubleEntry::DuplicateAccount",
+    "file": "oracle/api/json/config_duplicate_account_scoped_vs_unscoped.json"
+  },
+  {
+    "id": "config_duplicate_transfer",
+    "description": "Defining the same (from,to,code) twice",
+    "rules": [],
+    "outcome": "raises DoubleEntry::DuplicateTransfer",
+    "file": "oracle/api/json/config_duplicate_transfer.json"
+  },
+  {
+    "id": "config_transfer_unknown_accounts_allowed",
+    "description": "Transfers may reference accounts that are not defined (no validation at definition time)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/config_transfer_unknown_accounts_allowed.json"
+  },
+  {
+    "id": "config_account_identifier_max_length_ok",
+    "description": "account_identifier_max_length=5, identifier of 5 chars",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/config_account_identifier_max_length_ok.json"
+  },
+  {
+    "id": "config_account_identifier_too_long",
+    "description": "account_identifier_max_length=5, identifier of 6 chars",
+    "rules": [],
+    "outcome": "raises DoubleEntry::AccountIdentifierTooLongError",
+    "file": "oracle/api/json/config_account_identifier_too_long.json"
+  },
+  {
+    "id": "config_code_too_long",
+    "description": "code_max_length=4, code of 5 chars",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferCodeTooLongError",
+    "file": "oracle/api/json/config_code_too_long.json"
+  },
+  {
+    "id": "config_scope_too_long",
+    "description": "scope_identifier_max_length=3, scope identity \"1234\"",
+    "rules": [],
+    "outcome": "raises DoubleEntry::ScopeIdentifierTooLongError",
+    "file": "oracle/api/json/config_scope_too_long.json"
+  },
+  {
+    "id": "config_scope_too_long_via_lambda",
+    "description": "scope_identifier_max_length=1, user id 12 via scope lambda",
+    "rules": [],
+    "outcome": "raises DoubleEntry::ScopeIdentifierTooLongError",
+    "file": "oracle/api/json/config_scope_too_long_via_lambda.json"
+  },
+  {
+    "id": "config_existing_config_snapshot",
+    "description": "The standard oracle configuration (accounts and transfers as defined)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/config_existing_config_snapshot.json"
+  },
+  {
+    "id": "config_defaults",
+    "description": "Default configuration values",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/config_defaults.json"
+  },
+  {
+    "id": "account_unscoped",
+    "description": "DoubleEntry.account(:bank)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_unscoped.json"
+  },
+  {
+    "id": "account_scoped",
+    "description": "DoubleEntry.account(:checking, scope: user)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_scoped.json"
+  },
+  {
+    "id": "account_unknown",
+    "description": "Unknown identifier",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/account_unknown.json"
+  },
+  {
+    "id": "account_scoped_without_scope",
+    "description": "Scoped account requested without scope",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/account_scoped_without_scope.json"
+  },
+  {
+    "id": "account_unscoped_with_scope",
+    "description": "Unscoped account requested with a scope",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/account_unscoped_with_scope.json"
+  },
+  {
+    "id": "account_scope_lambda_raises",
+    "description": "Scope lambda rejects a non-User scope object",
+    "rules": [],
+    "outcome": "raises RuntimeError",
+    "file": "oracle/api/json/account_scope_lambda_raises.json"
+  },
+  {
+    "id": "account_scope_identity_option",
+    "description": "scope_identity: bypasses the lambda (string kept as-is)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_scope_identity_option.json"
+  },
+  {
+    "id": "account_scope_identity_integer",
+    "description": "scope_identity: 42 (Integer) is kept as Integer (not stringified)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_scope_identity_integer.json"
+  },
+  {
+    "id": "account_scope_empty_string",
+    "description": "scope: \"\" is not present? → treated as unscoped lookup",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/account_scope_empty_string.json"
+  },
+  {
+    "id": "account_scope_false",
+    "description": "scope: false → treated as unscoped lookup",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/account_scope_false.json"
+  },
+  {
+    "id": "account_scope_zero",
+    "description": "scope: 0 with identity lambda (0.present? is true)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_scope_zero.json"
+  },
+  {
+    "id": "account_scope_lambda_returns_nil",
+    "description": "Scope lambda returning nil → scope identity \"\" (nil.to_s)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_scope_lambda_returns_nil.json"
+  },
+  {
+    "id": "account_string_identifier",
+    "description": "Identifier passed as String instead of Symbol",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/account_string_identifier.json"
+  },
+  {
+    "id": "account_instance_semantics",
+    "description": "Equality, hash, sort order, to_s of Account::Instance",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/account_instance_semantics.json"
+  },
+  {
+    "id": "transfer_scoped_basic",
+    "description": "Transfer $10 bank → alice checking (deposit)",
+    "rules": [
+      "BR-010",
+      "BR-011",
+      "BR-012"
+    ],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_scoped_basic.json"
+  },
+  {
+    "id": "transfer_unscoped_basic",
+    "description": "Transfer $1000 bank → cash (salary)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_unscoped_basic.json"
+  },
+  {
+    "id": "transfer_sequence_running_balances",
+    "description": "Several transfers; running balances on lines and cached balances",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_sequence_running_balances.json"
+  },
+  {
+    "id": "transfer_zero_amount",
+    "description": "Zero amount is allowed (creates two lines with amount 0)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_zero_amount.json"
+  },
+  {
+    "id": "transfer_negative_amount",
+    "description": "Negative amount",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferIsNegative",
+    "file": "oracle/api/json/transfer_negative_amount.json"
+  },
+  {
+    "id": "transfer_not_allowed_direction",
+    "description": "Reverse direction of a defined transfer",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferNotAllowed",
+    "file": "oracle/api/json/transfer_not_allowed_direction.json"
+  },
+  {
+    "id": "transfer_not_allowed_code",
+    "description": "Unknown code",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferNotAllowed",
+    "file": "oracle/api/json/transfer_not_allowed_code.json"
+  },
+  {
+    "id": "transfer_missing_code",
+    "description": "No code given",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferNotAllowed",
+    "file": "oracle/api/json/transfer_missing_code.json"
+  },
+  {
+    "id": "transfer_string_code",
+    "description": "Code given as String \"salary\" while configured as Symbol",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferNotAllowed",
+    "file": "oracle/api/json/transfer_string_code.json"
+  },
+  {
+    "id": "transfer_missing_from",
+    "description": "No from account",
+    "rules": [],
+    "outcome": "raises NoMethodError",
+    "file": "oracle/api/json/transfer_missing_from.json"
+  },
+  {
+    "id": "transfer_same_account",
+    "description": "From and to are the same account instance (transfer savings→savings is configured)",
+    "rules": [],
+    "outcome": "raises DoubleEntry::TransferNotAllowed",
+    "file": "oracle/api/json/transfer_same_account.json"
+  },
+  {
+    "id": "transfer_same_identifier_other_scope",
+    "description": "checking(alice) → checking(bob), code p2p",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_same_identifier_other_scope.json"
+  },
+  {
+    "id": "transfer_mismatched_account_currencies",
+    "description": "USD account → BTC account (transfer defined)",
+    "rules": [],
+    "outcome": "raises DoubleEntry::MismatchedCurrencies",
+    "file": "oracle/api/json/transfer_mismatched_account_currencies.json"
+  },
+  {
+    "id": "transfer_amount_currency_differs_from_accounts",
+    "description": "BTC Money between two USD accounts",
+    "rules": [],
+    "outcome": "raises Money::Bank::UnknownRate",
+    "file": "oracle/api/json/transfer_amount_currency_differs_from_accounts.json"
+  },
+  {
+    "id": "transfer_amount_currency_differs_first_transfer_zero_balance",
+    "description": "EUR Money between USD accounts with no prior balance rows",
+    "rules": [],
+    "outcome": "raises Money::Bank::UnknownRate",
+    "file": "oracle/api/json/transfer_amount_currency_differs_first_transfer_zero_balance.json"
+  },
+  {
+    "id": "transfer_btc",
+    "description": "BTC transfer btc_store → btc_wallet (8 decimal subunits)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_btc.json"
+  },
+  {
+    "id": "transfer_jpy",
+    "description": "JPY transfer (0 decimal subunits): Money.new(500, \"JPY\")",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_jpy.json"
+  },
+  {
+    "id": "transfer_fractional_cents",
+    "description": "Money.new(10.5) (fractional subunit) → stored value",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_fractional_cents.json"
+  },
+  {
+    "id": "transfer_fractional_cents_11_5",
+    "description": "Money.new(11.5) (banker’s rounding check)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_fractional_cents_11_5.json"
+  },
+  {
+    "id": "transfer_bigint_max",
+    "description": "Amount 9223372036854775807 subunits",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_bigint_max.json"
+  },
+  {
+    "id": "transfer_bigint_overflow",
+    "description": "Balance overflows bigint (two max transfers into cash)",
+    "rules": [],
+    "outcome": "raises ActiveModel::RangeError",
+    "file": "oracle/api/json/transfer_bigint_overflow.json"
+  },
+  {
+    "id": "transfer_integer_amount",
+    "description": "Amount given as Integer 100 (not Money)",
+    "rules": [],
+    "outcome": "raises TypeError",
+    "file": "oracle/api/json/transfer_integer_amount.json"
+  },
+  {
+    "id": "transfer_nil_amount",
+    "description": "Amount nil",
+    "rules": [],
+    "outcome": "raises NoMethodError",
+    "file": "oracle/api/json/transfer_nil_amount.json"
+  },
+  {
+    "id": "transfer_positive_only_violation",
+    "description": "savings (positive_only) sent negative; no lines or balance changes persist",
+    "rules": [
+      "BR-030"
+    ],
+    "outcome": "raises DoubleEntry::AccountWouldBeSentNegative",
+    "file": "oracle/api/json/transfer_positive_only_violation.json"
+  },
+  {
+    "id": "transfer_positive_only_exact_zero",
+    "description": "savings drawn to exactly 0 is allowed",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_positive_only_exact_zero.json"
+  },
+  {
+    "id": "transfer_negative_only_violation",
+    "description": "liability (negative_only) sent positive",
+    "rules": [],
+    "outcome": "raises DoubleEntry::AccountWouldBeSentPositiveError",
+    "file": "oracle/api/json/transfer_negative_only_violation.json"
+  },
+  {
+    "id": "transfer_negative_only_ok",
+    "description": "liability (negative_only) sent negative is allowed",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_negative_only_ok.json"
+  },
+  {
+    "id": "transfer_with_detail",
+    "description": "detail: polymorphic AR record stored on both lines",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_with_detail.json"
+  },
+  {
+    "id": "transfer_with_metadata",
+    "description": "metadata: {country: \"AU\", tax: [\"GST\",\"VAT\"], n: 1, nested: {a: 1}}",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_with_metadata.json"
+  },
+  {
+    "id": "transfer_with_metadata_simple",
+    "description": "metadata: {country: \"AU\", tax: [\"GST\",\"VAT\"]}",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_with_metadata_simple.json"
+  },
+  {
+    "id": "transfer_with_empty_metadata",
+    "description": "metadata: {}",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_with_empty_metadata.json"
+  },
+  {
+    "id": "transfer_return_value",
+    "description": "Return value is [credit, debit]; credit is the from-line (negative amount)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_return_value.json"
+  },
+  {
+    "id": "transfer_inside_ar_transaction",
+    "description": "DoubleEntry.transfer inside ActiveRecord::Base.transaction",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockMustBeOutermostTransaction",
+    "file": "oracle/api/json/transfer_inside_ar_transaction.json"
+  },
+  {
+    "id": "transfer_inside_transaction_with_fixtures_flag",
+    "description": "running_inside_transactional_fixtures=true allows exactly one enclosing transaction",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/transfer_inside_transaction_with_fixtures_flag.json"
+  },
+  {
+    "id": "transfer_inside_two_transactions_with_fixtures_flag",
+    "description": "running_inside_transactional_fixtures=true, two nested transactions (requires_new)",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockMustBeOutermostTransaction",
+    "file": "oracle/api/json/transfer_inside_two_transactions_with_fixtures_flag.json"
+  },
+  {
+    "id": "lock_creates_missing_balances",
+    "description": "lock_accounts on accounts without balance rows creates them (balance from lines = 0)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_creates_missing_balances.json"
+  },
+  {
+    "id": "lock_returns_block_value",
+    "description": "Return value of lock_accounts when rows already exist vs when they are created",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_returns_block_value.json"
+  },
+  {
+    "id": "lock_balance_from_lines_after_flush",
+    "description": "Account balance rows deleted; next lock recreates them from the latest line balance",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_balance_from_lines_after_flush.json"
+  },
+  {
+    "id": "lock_multiple_transfers_atomic",
+    "description": "Two transfers and a user insert inside one lock_accounts block",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_multiple_transfers_atomic.json"
+  },
+  {
+    "id": "lock_wrong_locks",
+    "description": "Transfer inside a lock that does not cover the to-account",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockNotHeld",
+    "file": "oracle/api/json/lock_wrong_locks.json"
+  },
+  {
+    "id": "lock_nested_subset_ok",
+    "description": "Nested lock_accounts with a subset of the outer accounts",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_nested_subset_ok.json"
+  },
+  {
+    "id": "lock_nested_superset",
+    "description": "Nested lock_accounts asking for an account not locked by the outer block",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockNotHeld",
+    "file": "oracle/api/json/lock_nested_superset.json"
+  },
+  {
+    "id": "lock_inside_transaction",
+    "description": "lock_accounts inside an existing transaction",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockMustBeOutermostTransaction",
+    "file": "oracle/api/json/lock_inside_transaction.json"
+  },
+  {
+    "id": "lock_rollback",
+    "description": "raise ActiveRecord::Rollback inside lock_accounts after a transfer",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_rollback.json"
+  },
+  {
+    "id": "lock_exception_rollback",
+    "description": "RuntimeError inside lock_accounts after a transfer propagates; nothing persists",
+    "rules": [],
+    "outcome": "raises RuntimeError",
+    "file": "oracle/api/json/lock_exception_rollback.json"
+  },
+  {
+    "id": "lock_order_sql",
+    "description": "Lock acquisition order: accounts sorted by [scope_identity.to_s, identifier.to_s] (see SELECT … FOR UPDATE order)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_order_sql.json"
+  },
+  {
+    "id": "lock_empty",
+    "description": "lock_accounts with no accounts",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_empty.json"
+  },
+  {
+    "id": "lock_balance_for_locked_account_outside_lock",
+    "description": "Locking.balance_for_locked_account outside a lock",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockNotHeld",
+    "file": "oracle/api/json/lock_balance_for_locked_account_outside_lock.json"
+  },
+  {
+    "id": "lock_wait_timeout_pg",
+    "description": "PG lock_timeout while another connection holds the row lock (is it mapped to LockWaitTimeout?)",
+    "rules": [],
+    "outcome": "raises ActiveRecord::LockWaitTimeout",
+    "file": "oracle/api/json/lock_wait_timeout_pg.json"
+  },
+  {
+    "id": "lock_null_scope_duplicate_balance_rows",
+    "description": "PG unique index (scope, account) does not prevent two NULL-scope rows for the same account",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_null_scope_duplicate_balance_rows.json"
+  },
+  {
+    "id": "lock_create_ignoring_duplicates_scoped",
+    "description": "AccountBalance.create_ignoring_duplicates! twice for a scoped account (duplicate ignored + notification)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_create_ignoring_duplicates_scoped.json"
+  },
+  {
+    "id": "lock_concurrent_threads_same_accounts",
+    "description": "8 threads × 25 transfers bank→cash concurrently; final balances reconcile",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/lock_concurrent_threads_same_accounts.json"
+  },
+  {
+    "id": "balance_fixture_lines",
+    "description": "The fixture used by balance_* scenarios (lines at T0-21d, -14d, -7d, T0; T0=2026-01-15T10:00Z)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_fixture_lines.json"
+  },
+  {
+    "id": "balance_current",
+    "description": "Current balances",
+    "rules": [
+      "BR-040"
+    ],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_current.json"
+  },
+  {
+    "id": "balance_no_lines",
+    "description": "Balance of an account with no lines: zero in account currency",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_no_lines.json"
+  },
+  {
+    "id": "balance_symbol_with_scope",
+    "description": "DoubleEntry.balance(:checking, scope: user)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_symbol_with_scope.json"
+  },
+  {
+    "id": "balance_scoped_without_scope",
+    "description": "DoubleEntry.balance(:checking) on a scoped account",
+    "rules": [],
+    "outcome": "raises DoubleEntry::UnknownAccount",
+    "file": "oracle/api/json/balance_scoped_without_scope.json"
+  },
+  {
+    "id": "balance_at_exact_timestamp",
+    "description": "at: exactly T0-14d (created_at <= at, inclusive)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_at_exact_timestamp.json"
+  },
+  {
+    "id": "balance_at_before_first",
+    "description": "at: before any line → zero",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_at_before_first.json"
+  },
+  {
+    "id": "balance_at_between",
+    "description": "at: T0-10d",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_at_between.json"
+  },
+  {
+    "id": "balance_between_inclusive",
+    "description": "from: T0-14d to: T0-7d (BETWEEN, both ends inclusive) → sum of amounts",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_between_inclusive.json"
+  },
+  {
+    "id": "balance_between_empty",
+    "description": "from/to window with no lines → 0",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_between_empty.json"
+  },
+  {
+    "id": "balance_from_only",
+    "description": "from: without to: is ignored → current balance",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_from_only.json"
+  },
+  {
+    "id": "balance_to_only",
+    "description": "to: without from: is ignored → current balance",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_to_only.json"
+  },
+  {
+    "id": "balance_at_overrides_range",
+    "description": "at: given together with from/to → at wins, range ignored",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_at_overrides_range.json"
+  },
+  {
+    "id": "balance_inverted_range",
+    "description": "from > to → BETWEEN returns no rows → 0",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_inverted_range.json"
+  },
+  {
+    "id": "balance_code",
+    "description": "code: :purchase on store",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_code.json"
+  },
+  {
+    "id": "balance_codes",
+    "description": "codes: [:purchase, :layby] on store",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_codes.json"
+  },
+  {
+    "id": "balance_code_and_codes",
+    "description": "code: :layby plus codes: [:purchase] → union",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_code_and_codes.json"
+  },
+  {
+    "id": "balance_code_unknown",
+    "description": "code that never occurred → 0",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_code_unknown.json"
+  },
+  {
+    "id": "balance_code_and_at",
+    "description": "code + at → sum of amounts with that code up to at",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_code_and_at.json"
+  },
+  {
+    "id": "balance_code_and_range",
+    "description": "code + from/to",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_code_and_range.json"
+  },
+  {
+    "id": "balance_codes_empty_array",
+    "description": "codes: [] → treated as no code filter (running balance)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_codes_empty_array.json"
+  },
+  {
+    "id": "balance_order_by_id_not_time",
+    "description": "A line inserted later with an older created_at: current/at balances use highest id, not latest time",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_order_by_id_not_time.json"
+  },
+  {
+    "id": "balance_time_with_offset",
+    "description": "at: given as a +10:00 local Time equal to T0 (compared in UTC)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_time_with_offset.json"
+  },
+  {
+    "id": "balance_reads_lines_not_cache",
+    "description": "Current balance comes from the last line, not from account_balances (cache tampered)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_reads_lines_not_cache.json"
+  },
+  {
+    "id": "balance_scopes_with_minimum_balance",
+    "description": "AccountBalance.scopes_with_minimum_balance_for_account (>=, returns scope strings; ignores currency)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/balance_scopes_with_minimum_balance.json"
+  },
+  {
+    "id": "line_scopes",
+    "description": "Line.credits (amount > 0) / Line.debits (amount < 0) / with_id_greater_than",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/line_scopes.json"
+  },
+  {
+    "id": "line_find_id_and_created_at",
+    "description": "Line.find_id_and_created_at(conditions:) raw rows",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/line_find_id_and_created_at.json"
+  },
+  {
+    "id": "line_metadata_reader",
+    "description": "line.metadata after a transfer with metadata (association vs column)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/line_metadata_reader.json"
+  },
+  {
+    "id": "line_direct_create_positive_only_check",
+    "description": "Line.save! with negative balance on a positive_only account raises before INSERT",
+    "rules": [],
+    "outcome": "raises DoubleEntry::AccountWouldBeSentNegative",
+    "file": "oracle/api/json/line_direct_create_positive_only_check.json"
+  },
+  {
+    "id": "line_direct_create_missing_code",
+    "description": "Line.save! without code → DB NOT NULL violation",
+    "rules": [],
+    "outcome": "raises ActiveRecord::NotNullViolation",
+    "file": "oracle/api/json/line_direct_create_missing_code.json"
+  },
+  {
+    "id": "line_account_unknown_after_config_change",
+    "description": "Reading line.account when its identifier is no longer configured",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/line_account_unknown_after_config_change.json"
+  },
+  {
+    "id": "linecheck_no_lines",
+    "description": "LineCheck.perform! with no lines → nil, no row",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_no_lines.json"
+  },
+  {
+    "id": "linecheck_consistent",
+    "description": "LineCheck.perform! on consistent data",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_consistent.json"
+  },
+  {
+    "id": "linecheck_second_run_nothing_new",
+    "description": "Second run without new lines → nil",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_second_run_nothing_new.json"
+  },
+  {
+    "id": "linecheck_incremental",
+    "description": "Second run only checks lines with id > last_line_id of newest check (by created_at)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_incremental.json"
+  },
+  {
+    "id": "linecheck_line_error_no_fixer",
+    "description": "Corrupted line balance (+1), no fixer → errors_found, log, no correction",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_line_error_no_fixer.json"
+  },
+  {
+    "id": "linecheck_line_error_with_fixer",
+    "description": "Corrupted line balance (+1) with AccountFixer → corrected",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_line_error_with_fixer.json"
+  },
+  {
+    "id": "linecheck_account_balance_error_with_fixer",
+    "description": "Corrupted cached account balance (+1) with AccountFixer",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_account_balance_error_with_fixer.json"
+  },
+  {
+    "id": "linecheck_unscoped_accounts",
+    "description": "Corrupted unscoped account line with fixer",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_unscoped_accounts.json"
+  },
+  {
+    "id": "linecheck_inside_transaction",
+    "description": "LineCheck.perform! inside a transaction (it locks accounts)",
+    "rules": [],
+    "outcome": "raises DoubleEntry::Locking::LockMustBeOutermostTransaction",
+    "file": "oracle/api/json/linecheck_inside_transaction.json"
+  },
+  {
+    "id": "accountfixer_positive_only_goes_negative",
+    "description": "AccountFixer recalculation sending a positive_only line negative",
+    "rules": [],
+    "outcome": "raises DoubleEntry::AccountWouldBeSentNegative",
+    "file": "oracle/api/json/accountfixer_positive_only_goes_negative.json"
+  },
+  {
+    "id": "accountfixer_standalone",
+    "description": "AccountFixer#recalculate_account rewrites running balances and the cached balance",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/accountfixer_standalone.json"
+  },
+  {
+    "id": "linecheck_last_line_id_checked",
+    "description": "LineCheck.last_line_id_checked picks newest by created_at, 0 when none",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/linecheck_last_line_id_checked.json"
+  },
+  {
+    "id": "compat_nulls_not_distinct_index",
+    "description": "D-005 probe: with UNIQUE NULLS NOT DISTINCT (scope, account) the Ruby gem still works — concurrent first use of unscoped accounts creates exactly one row each (duplicates ignored)",
+    "rules": [],
+    "outcome": "returns",
+    "file": "oracle/api/json/compat_nulls_not_distinct_index.json"
+  }
+]

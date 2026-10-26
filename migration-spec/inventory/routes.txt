@@ -1,0 +1,5 @@
+# routes inventory — double_entry @ f1474f0fe160edadd3b3264397b85d38d3a7751d
+# NO HTTP ROUTES. double_entry is a Ruby library gem (double_entry.gemspec), not a Rails application:
+#   - there is no config/routes.rb, no app/ directory, no bin/rails, no config.ru  (evidence: inventory/files.txt, 65 tracked files)
+#   - `git ls-files | grep -E '(^|/)(routes\.rb|config\.ru|app/|controllers?/)'` → 0 matches
+# The library's callable surface (the equivalent of routes) is inventoried in api.json (Ruby reflection, every method with source location).

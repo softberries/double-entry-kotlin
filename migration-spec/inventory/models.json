@@ -1,0 +1,392 @@
+[
+  {
+    "name": "DoubleEntry::AccountBalance",
+    "table": "double_entry_account_balances",
+    "source": "lib/double_entry/account_balance.rb:10",
+    "test_only": false,
+    "columns": [
+      {
+        "name": "id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "account",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "scope",
+        "sql_type": "character varying",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "balance",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "updated_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      }
+    ],
+    "associations": [],
+    "validations": [],
+    "callbacks": {
+      "validation": [
+        "before:normalize_changed_in_place_attributes"
+      ]
+    },
+    "enums": {},
+    "serialized_attributes": [],
+    "scopes": [],
+    "overridden_methods": [
+      "account",
+      "account=",
+      "balance",
+      "balance=",
+      "currency",
+      "find_by_account",
+      "scopes_with_minimum_balance_for_account"
+    ]
+  },
+  {
+    "name": "DoubleEntry::Line",
+    "table": "double_entry_lines",
+    "source": "lib/double_entry/line.rb:57",
+    "test_only": false,
+    "columns": [
+      {
+        "name": "id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "account",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "scope",
+        "sql_type": "character varying",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "code",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "amount",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "balance",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "partner_id",
+        "sql_type": "bigint",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "partner_account",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "partner_scope",
+        "sql_type": "character varying",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "detail_type",
+        "sql_type": "character varying",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "detail_id",
+        "sql_type": "bigint",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "metadata",
+        "sql_type": "jsonb",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "updated_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      }
+    ],
+    "associations": [
+      {
+        "macro": "belongs_to",
+        "name": "detail",
+        "class_name": null,
+        "polymorphic": true,
+        "options": {
+          "polymorphic": "true",
+          "optional": "true"
+        }
+      }
+    ],
+    "validations": [],
+    "callbacks": {
+      "validation": [
+        "before:normalize_changed_in_place_attributes"
+      ],
+      "save": [
+        "before:autosave_associated_records_for_detail"
+      ]
+    },
+    "enums": {},
+    "serialized_attributes": [],
+    "scopes": [
+      {
+        "name": "credits",
+        "source": "lib/double_entry/line.rb:60"
+      },
+      {
+        "name": "debits",
+        "source": "lib/double_entry/line.rb:61"
+      },
+      {
+        "name": "with_id_greater_than",
+        "source": "lib/double_entry/line.rb:62"
+      }
+    ],
+    "overridden_methods": [
+      "_run_save_callbacks",
+      "account",
+      "account=",
+      "amount",
+      "amount=",
+      "autosave_associated_records_for_detail",
+      "balance",
+      "balance=",
+      "code",
+      "code=",
+      "credits",
+      "currency",
+      "debits",
+      "decrease?",
+      "find_id_and_created_at",
+      "increase?",
+      "pair",
+      "partner",
+      "partner_account",
+      "partner_account=",
+      "save",
+      "save!",
+      "with_id_greater_than"
+    ]
+  },
+  {
+    "name": "DoubleEntry::LineMetadata",
+    "table": "double_entry_line_metadata",
+    "source": "lib/double_entry/line_metadata.rb:2",
+    "test_only": false,
+    "columns": [
+      {
+        "name": "id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "line_id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "key",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "value",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "updated_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      }
+    ],
+    "associations": [
+      {
+        "macro": "belongs_to",
+        "name": "line",
+        "class_name": "Line",
+        "polymorphic": false,
+        "options": {}
+      }
+    ],
+    "validations": [],
+    "callbacks": {
+      "validation": [
+        "before:normalize_changed_in_place_attributes"
+      ],
+      "save": [
+        "before:autosave_associated_records_for_line"
+      ]
+    },
+    "enums": {},
+    "serialized_attributes": [
+      "key"
+    ],
+    "scopes": [],
+    "overridden_methods": [
+      "_run_save_callbacks",
+      "autosave_associated_records_for_line"
+    ]
+  },
+  {
+    "name": "DoubleEntry::Validation::LineCheck",
+    "table": "double_entry_line_checks",
+    "source": "lib/double_entry/validation/line_check.rb:6",
+    "test_only": false,
+    "columns": [
+      {
+        "name": "id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "last_line_id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "errors_found",
+        "sql_type": "boolean",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "log",
+        "sql_type": "text",
+        "null": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "updated_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      }
+    ],
+    "associations": [],
+    "validations": [],
+    "callbacks": {
+      "validation": [
+        "before:normalize_changed_in_place_attributes"
+      ]
+    },
+    "enums": {},
+    "serialized_attributes": [],
+    "scopes": [],
+    "overridden_methods": [
+      "last_line_id_checked",
+      "perform",
+      "perform!"
+    ]
+  },
+  {
+    "name": "User",
+    "table": "users",
+    "source": "/workspace/ruby-service-investigator/tools/inventory.rb:52",
+    "test_only": true,
+    "columns": [
+      {
+        "name": "id",
+        "sql_type": "bigint",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "username",
+        "sql_type": "character varying",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      },
+      {
+        "name": "updated_at",
+        "sql_type": "timestamp(6) without time zone",
+        "null": false,
+        "default": null
+      }
+    ],
+    "associations": [],
+    "validations": [],
+    "callbacks": {
+      "validation": [
+        "before:normalize_changed_in_place_attributes"
+      ]
+    },
+    "enums": {},
+    "serialized_attributes": [],
+    "scopes": [],
+    "overridden_methods": []
+  }
+]

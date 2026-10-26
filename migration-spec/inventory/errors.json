@@ -1,0 +1,92 @@
+[
+  {
+    "name": "ActiveRecord::RestartTransaction",
+    "superclass": "RuntimeError",
+    "source": "lib/active_record/locking_extensions.rb:76"
+  },
+  {
+    "name": "DoubleEntry::AccountIdentifierTooLongError",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:5"
+  },
+  {
+    "name": "DoubleEntry::AccountWouldBeSentNegative",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:12"
+  },
+  {
+    "name": "DoubleEntry::AccountWouldBeSentPositiveError",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:13"
+  },
+  {
+    "name": "DoubleEntry::DoubleEntryError",
+    "superclass": "RuntimeError",
+    "source": "lib/double_entry/errors.rb:3"
+  },
+  {
+    "name": "DoubleEntry::DuplicateAccount",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:10"
+  },
+  {
+    "name": "DoubleEntry::DuplicateTransfer",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:11"
+  },
+  {
+    "name": "DoubleEntry::Locking::LockDisaster",
+    "superclass": "RuntimeError",
+    "source": "lib/double_entry/locking.rb:183"
+  },
+  {
+    "name": "DoubleEntry::Locking::LockMustBeOutermostTransaction",
+    "superclass": "RuntimeError",
+    "source": "lib/double_entry/locking.rb:175"
+  },
+  {
+    "name": "DoubleEntry::Locking::LockNotHeld",
+    "superclass": "RuntimeError",
+    "source": "lib/double_entry/locking.rb:179"
+  },
+  {
+    "name": "DoubleEntry::Locking::LockWaitTimeout",
+    "superclass": "RuntimeError",
+    "source": "lib/double_entry/locking.rb:187"
+  },
+  {
+    "name": "DoubleEntry::MismatchedCurrencies",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:14"
+  },
+  {
+    "name": "DoubleEntry::MissingAccountError",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:15"
+  },
+  {
+    "name": "DoubleEntry::ScopeIdentifierTooLongError",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:6"
+  },
+  {
+    "name": "DoubleEntry::TransferCodeTooLongError",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:9"
+  },
+  {
+    "name": "DoubleEntry::TransferIsNegative",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:8"
+  },
+  {
+    "name": "DoubleEntry::TransferNotAllowed",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:7"
+  },
+  {
+    "name": "DoubleEntry::UnknownAccount",
+    "superclass": "DoubleEntry::DoubleEntryError",
+    "source": "lib/double_entry/errors.rb:4"
+  }
+]

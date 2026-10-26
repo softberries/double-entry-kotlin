@@ -1,0 +1,1883 @@
+[
+  {
+    "id": "DoubleEntry.account",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "identifier"
+      ],
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry.rb:51"
+  },
+  {
+    "id": "DoubleEntry.balance",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "account"
+      ],
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry.rb:142"
+  },
+  {
+    "id": "DoubleEntry.lock_accounts",
+    "kind": "class_method",
+    "params": [
+      [
+        "rest",
+        "accounts"
+      ],
+      [
+        "block",
+        "block"
+      ]
+    ],
+    "source": "lib/double_entry.rb:163"
+  },
+  {
+    "id": "DoubleEntry.table_name_prefix",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry.rb:168"
+  },
+  {
+    "id": "DoubleEntry.transfer",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "amount"
+      ],
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry.rb:88"
+  },
+  {
+    "id": "DoubleEntry::Account.account",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "identifier"
+      ],
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:16"
+  },
+  {
+    "id": "DoubleEntry::Account.account_identifier_max_length",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry/account.rb:7"
+  },
+  {
+    "id": "DoubleEntry::Account.account_identifier_max_length=",
+    "kind": "class_method",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:7"
+  },
+  {
+    "id": "DoubleEntry::Account.accounts",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry/account.rb:11"
+  },
+  {
+    "id": "DoubleEntry::Account.accounts=",
+    "kind": "class_method",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:8"
+  },
+  {
+    "id": "DoubleEntry::Account.currency",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "identifier"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:22"
+  },
+  {
+    "id": "DoubleEntry::Account.scope_identifier_max_length",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry/account.rb:7"
+  },
+  {
+    "id": "DoubleEntry::Account.scope_identifier_max_length=",
+    "kind": "class_method",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:7"
+  },
+  {
+    "id": "DoubleEntry::Account#currency",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:141"
+  },
+  {
+    "id": "DoubleEntry::Account#identifier",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:141"
+  },
+  {
+    "id": "DoubleEntry::Account#initialize",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "args"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:143"
+  },
+  {
+    "id": "DoubleEntry::Account#negative_only",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:141"
+  },
+  {
+    "id": "DoubleEntry::Account#positive_only",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:141"
+  },
+  {
+    "id": "DoubleEntry::Account#scope_identifier",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:141"
+  },
+  {
+    "id": "DoubleEntry::Account#scoped?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:155"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#<=>",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "other"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:110"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#==",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "other"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:102"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#account",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:69"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#balance",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:96"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#call_scope_identifier",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:83"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#currency",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:70"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#ensure_scope_is_valid",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:132"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#eql?",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "other"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:106"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#hash",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:114"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#identifier",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:70"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#initialize",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "args"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:72"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#inspect",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:126"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#negative_only",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:70"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#positive_only",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:70"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#scope",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:69"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#scope_identifier",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:70"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#scope_identity",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:79"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#scoped?",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:70"
+  },
+  {
+    "id": "DoubleEntry::Account::Instance#to_s",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:122"
+  },
+  {
+    "id": "DoubleEntry::Account::Set#all",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:57"
+  },
+  {
+    "id": "DoubleEntry::Account::Set#backing_collection",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/account.rb:63"
+  },
+  {
+    "id": "DoubleEntry::Account::Set#define",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "attributes"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:33"
+  },
+  {
+    "id": "DoubleEntry::Account::Set#find",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "identifier"
+      ],
+      [
+        "req",
+        "scoped"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:43"
+  },
+  {
+    "id": "DoubleEntry::Account::Set#find_without_scope",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "identifier"
+      ]
+    ],
+    "source": "lib/double_entry/account.rb:53"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance.find_by_account",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "account"
+      ],
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/account_balance.rb:31"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance.scopes_with_minimum_balance_for_account",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "minimum_balance"
+      ],
+      [
+        "req",
+        "account_identifier"
+      ]
+    ],
+    "source": "lib/double_entry/account_balance.rb:50"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance#account",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account_balance.rb:27"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance#account=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/account_balance.rb:21"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance#balance",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/account_balance.rb:13"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance#balance=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "money"
+      ]
+    ],
+    "source": "lib/double_entry/account_balance.rb:17"
+  },
+  {
+    "id": "DoubleEntry::AccountBalance#currency",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/account_balance.rb:11"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator#calculate",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "account"
+      ],
+      [
+        "opt",
+        "args"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:16"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator#force_index?",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:41"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator#lines_table_name",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:37"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#account",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:51"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#at",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:51"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#at?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:62"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#between?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:66"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#code?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:70"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#codes",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:51"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#from",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:51"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#initialize",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "account"
+      ],
+      [
+        "opt",
+        "args"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:53"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#scope",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:51"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#scope?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:74"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::Options#to",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:51"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#account",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#at",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#at?",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#between?",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#build",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:88"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#code?",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#codes",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#from",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#initialize",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:84"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#options",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/balance_calculator.rb:81"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#scope",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#scope?",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::BalanceCalculator::RelationBuilder#to",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/balance_calculator.rb:82"
+  },
+  {
+    "id": "DoubleEntry::Configurable.included",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "base"
+      ]
+    ],
+    "source": "lib/double_entry/configurable.rb:36"
+  },
+  {
+    "id": "DoubleEntry::Configurable::ClassMethods#config",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/configurable.rb:41"
+  },
+  {
+    "id": "DoubleEntry::Configurable::ClassMethods#configuration",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/configurable.rb:41"
+  },
+  {
+    "id": "DoubleEntry::Configurable::ClassMethods#configure",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/configurable.rb:46"
+  },
+  {
+    "id": "DoubleEntry::Configuration#account_identifier_max_length",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Configuration#account_identifier_max_length=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "arg"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Configuration#accounts",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Configuration#accounts=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "arg"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Configuration#code_max_length",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:22"
+  },
+  {
+    "id": "DoubleEntry::Configuration#code_max_length=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "arg"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:22"
+  },
+  {
+    "id": "DoubleEntry::Configuration#define_accounts",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/configuration.rb:30"
+  },
+  {
+    "id": "DoubleEntry::Configuration#define_transfers",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/configuration.rb:34"
+  },
+  {
+    "id": "DoubleEntry::Configuration#initialize",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/configuration.rb:8"
+  },
+  {
+    "id": "DoubleEntry::Configuration#json_metadata",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/configuration.rb:6"
+  },
+  {
+    "id": "DoubleEntry::Configuration#json_metadata=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:6"
+  },
+  {
+    "id": "DoubleEntry::Configuration#scope_identifier_max_length",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Configuration#scope_identifier_max_length=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "arg"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Configuration#transfers",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "*"
+      ],
+      [
+        "keyrest",
+        "**"
+      ],
+      [
+        "block",
+        "&"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:22"
+  },
+  {
+    "id": "DoubleEntry::Configuration#transfers=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "arg"
+      ]
+    ],
+    "source": "lib/double_entry/configuration.rb:22"
+  },
+  {
+    "id": "DoubleEntry::Generators::InstallGenerator.next_migration_number",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "path"
+      ]
+    ],
+    "source": "lib/generators/double_entry/install/install_generator.rb:14"
+  },
+  {
+    "id": "DoubleEntry::Generators::InstallGenerator#copy_migrations",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/generators/double_entry/install/install_generator.rb:18"
+  },
+  {
+    "id": "DoubleEntry::Generators::InstallGenerator#create_initializer",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/generators/double_entry/install/install_generator.rb:22"
+  },
+  {
+    "id": "DoubleEntry::Generators::InstallGenerator#json_metadata",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/generators/double_entry/install/install_generator.rb:26"
+  },
+  {
+    "id": "DoubleEntry::Generators::InstallGenerator#migration_version",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/generators/double_entry/install/install_generator.rb:35"
+  },
+  {
+    "id": "DoubleEntry::Line.find_id_and_created_at",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:147"
+  },
+  {
+    "id": "DoubleEntry::Line#account",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:106"
+  },
+  {
+    "id": "DoubleEntry::Line#account=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:99"
+  },
+  {
+    "id": "DoubleEntry::Line#amount",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:64"
+  },
+  {
+    "id": "DoubleEntry::Line#amount=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "money"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:68"
+  },
+  {
+    "id": "DoubleEntry::Line#balance",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:72"
+  },
+  {
+    "id": "DoubleEntry::Line#balance=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "money"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:76"
+  },
+  {
+    "id": "DoubleEntry::Line#check_balance_will_remain_valid",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:156"
+  },
+  {
+    "id": "DoubleEntry::Line#code",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:95"
+  },
+  {
+    "id": "DoubleEntry::Line#code=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "code"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:90"
+  },
+  {
+    "id": "DoubleEntry::Line#currency",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:110"
+  },
+  {
+    "id": "DoubleEntry::Line#decrease?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:137"
+  },
+  {
+    "id": "DoubleEntry::Line#increase?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:141"
+  },
+  {
+    "id": "DoubleEntry::Line#pair",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:129"
+  },
+  {
+    "id": "DoubleEntry::Line#partner",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:125"
+  },
+  {
+    "id": "DoubleEntry::Line#partner_account",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/line.rb:121"
+  },
+  {
+    "id": "DoubleEntry::Line#partner_account=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "partner_account"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:114"
+  },
+  {
+    "id": "DoubleEntry::Line#save",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "keyrest",
+        "**"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:80"
+  },
+  {
+    "id": "DoubleEntry::Line#save!",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "keyrest",
+        "**"
+      ]
+    ],
+    "source": "lib/double_entry/line.rb:85"
+  },
+  {
+    "id": "DoubleEntry::LineMetadata::SymbolWrapper.dump",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "symbol"
+      ]
+    ],
+    "source": "lib/double_entry/line_metadata.rb:9"
+  },
+  {
+    "id": "DoubleEntry::LineMetadata::SymbolWrapper.load",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "string"
+      ]
+    ],
+    "source": "lib/double_entry/line_metadata.rb:4"
+  },
+  {
+    "id": "DoubleEntry::Locking.balance_for_locked_account",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:55"
+  },
+  {
+    "id": "DoubleEntry::Locking.lock_accounts",
+    "kind": "class_method",
+    "params": [
+      [
+        "rest",
+        "accounts"
+      ],
+      [
+        "block",
+        "block"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:35"
+  },
+  {
+    "id": "DoubleEntry::Locking::Configuration#initialize",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:26"
+  },
+  {
+    "id": "DoubleEntry::Locking::Configuration#running_inside_transactional_fixtures",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:24"
+  },
+  {
+    "id": "DoubleEntry::Locking::Configuration#running_inside_transactional_fixtures=",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:24"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#balance_for",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:89"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#create_missing_account_balances",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:164"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#ensure_locked!",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:81"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#ensure_outermost_transaction!",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:115"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#grab_locks",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:149"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#in_a_locked_transaction?",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:77"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#initialize",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "accounts"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:60"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#lock?",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:110"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#lock_and_call",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:127"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#locks",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:97"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#locks=",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "locks"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:101"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#perform_lock",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "block",
+        "block"
+      ]
+    ],
+    "source": "lib/double_entry/locking.rb:67"
+  },
+  {
+    "id": "DoubleEntry::Locking::Lock#remove_locks",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/locking.rb:105"
+  },
+  {
+    "id": "DoubleEntry::Transfer.code_max_length",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:7"
+  },
+  {
+    "id": "DoubleEntry::Transfer.code_max_length=",
+    "kind": "class_method",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:7"
+  },
+  {
+    "id": "DoubleEntry::Transfer.transfer",
+    "kind": "class_method",
+    "params": [
+      [
+        "req",
+        "amount"
+      ],
+      [
+        "opt",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:16"
+  },
+  {
+    "id": "DoubleEntry::Transfer.transfers",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:11"
+  },
+  {
+    "id": "DoubleEntry::Transfer.transfers=",
+    "kind": "class_method",
+    "params": [
+      [
+        "req"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:8"
+  },
+  {
+    "id": "DoubleEntry::Transfer#code",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:66"
+  },
+  {
+    "id": "DoubleEntry::Transfer#create_line_metadata",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "credit"
+      ],
+      [
+        "req",
+        "debit"
+      ],
+      [
+        "req",
+        "metadata"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:123"
+  },
+  {
+    "id": "DoubleEntry::Transfer#create_lines",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "amount"
+      ],
+      [
+        "req",
+        "code"
+      ],
+      [
+        "req",
+        "detail"
+      ],
+      [
+        "req",
+        "from_account"
+      ],
+      [
+        "req",
+        "to_account"
+      ],
+      [
+        "req",
+        "metadata"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:98"
+  },
+  {
+    "id": "DoubleEntry::Transfer#from",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:66"
+  },
+  {
+    "id": "DoubleEntry::Transfer#initialize",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "attributes"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:68"
+  },
+  {
+    "id": "DoubleEntry::Transfer#process",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "amount"
+      ],
+      [
+        "req",
+        "options"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:78"
+  },
+  {
+    "id": "DoubleEntry::Transfer#to",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:66"
+  },
+  {
+    "id": "DoubleEntry::Transfer::Set#_find",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "from"
+      ],
+      [
+        "req",
+        "to"
+      ],
+      [
+        "req",
+        "code"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:61"
+  },
+  {
+    "id": "DoubleEntry::Transfer::Set#all",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:51"
+  },
+  {
+    "id": "DoubleEntry::Transfer::Set#backing_collection",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/transfer.rb:57"
+  },
+  {
+    "id": "DoubleEntry::Transfer::Set#define",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "attributes"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:30"
+  },
+  {
+    "id": "DoubleEntry::Transfer::Set#find",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "from_account"
+      ],
+      [
+        "req",
+        "to_account"
+      ],
+      [
+        "req",
+        "code"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:41"
+  },
+  {
+    "id": "DoubleEntry::Transfer::Set#find!",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "from_account"
+      ],
+      [
+        "req",
+        "to_account"
+      ],
+      [
+        "req",
+        "code"
+      ]
+    ],
+    "source": "lib/double_entry/transfer.rb:45"
+  },
+  {
+    "id": "DoubleEntry::Validation::AccountFixer#lines_for_account",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/validation/account_fixer.rb:23"
+  },
+  {
+    "id": "DoubleEntry::Validation::AccountFixer#recalculate_account",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "account"
+      ]
+    ],
+    "source": "lib/double_entry/validation/account_fixer.rb:6"
+  },
+  {
+    "id": "DoubleEntry::Validation::AccountFixer#update_balance_for_account",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "account"
+      ],
+      [
+        "req",
+        "balance"
+      ]
+    ],
+    "source": "lib/double_entry/validation/account_fixer.rb:30"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck.last_line_id_checked",
+    "kind": "class_method",
+    "params": [],
+    "source": "lib/double_entry/validation/line_check.rb:8"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck.perform!",
+    "kind": "class_method",
+    "params": [
+      [
+        "key",
+        "fixer"
+      ]
+    ],
+    "source": "lib/double_entry/validation/line_check.rb:12"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#cached_balance_correct?",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "account"
+      ],
+      [
+        "req",
+        "log"
+      ]
+    ],
+    "source": "lib/double_entry/validation/line_check.rb:108"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#find_previous_line",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "identifier"
+      ],
+      [
+        "req",
+        "scope"
+      ],
+      [
+        "req",
+        "id"
+      ]
+    ],
+    "source": "lib/double_entry/validation/line_check.rb:62"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#force_index",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/validation/line_check.rb:87"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#line_error_message",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "line"
+      ],
+      [
+        "req",
+        "previous_line"
+      ],
+      [
+        "req",
+        "previous_balance"
+      ]
+    ],
+    "source": "lib/double_entry/validation/line_check.rb:97"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#new_lines_since_last_run",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/double_entry/validation/line_check.rb:46"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#perform",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "key",
+        "fixer"
+      ]
+    ],
+    "source": "lib/double_entry/validation/line_check.rb:16"
+  },
+  {
+    "id": "DoubleEntry::Validation::LineCheck#running_balance_correct?",
+    "kind": "instance_method(private)",
+    "params": [
+      [
+        "req",
+        "line"
+      ],
+      [
+        "req",
+        "log"
+      ]
+    ],
+    "source": "lib/double_entry/validation/line_check.rb:50"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions#create_ignoring_duplicates!",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "rest",
+        "args"
+      ]
+    ],
+    "source": "lib/active_record/locking_extensions.rb:31"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions#ignoring_duplicates",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/active_record/locking_extensions.rb:41"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions#restartable_transaction",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "block",
+        "block"
+      ]
+    ],
+    "source": "lib/active_record/locking_extensions.rb:9"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions#retry_deadlocks",
+    "kind": "instance_method(private)",
+    "params": [],
+    "source": "lib/active_record/locking_extensions.rb:57"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions#with_restart_on_deadlock",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/active_record/locking_extensions.rb:17"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions::LogSubscriber#deadlock_restart",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "event"
+      ]
+    ],
+    "source": "lib/active_record/locking_extensions/log_subscriber.rb:7"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions::LogSubscriber#deadlock_retry",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "event"
+      ]
+    ],
+    "source": "lib/active_record/locking_extensions/log_subscriber.rb:12"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions::LogSubscriber#duplicate_ignore",
+    "kind": "instance_method(public)",
+    "params": [
+      [
+        "req",
+        "event"
+      ]
+    ],
+    "source": "lib/active_record/locking_extensions/log_subscriber.rb:17"
+  },
+  {
+    "id": "ActiveRecord::LockingExtensions::LogSubscriber#logger",
+    "kind": "instance_method(public)",
+    "params": [],
+    "source": "lib/active_record/locking_extensions/log_subscriber.rb:22"
+  }
+]

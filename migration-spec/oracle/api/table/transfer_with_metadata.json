@@ -1,0 +1,220 @@
+{
+  "id": "transfer_with_metadata",
+  "description": "metadata: {country: \"AU\", tax: [\"GST\",\"VAT\"], n: 1, nested: {a: 1}}",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": [
+    {
+      "record": "DoubleEntry::Line",
+      "attributes": {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "code": "deposit",
+        "amount": -100,
+        "balance": -100,
+        "partner_id": 2,
+        "partner_account": "checking",
+        "partner_scope": "1",
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:47.068112Z",
+        "updated_at": "2026-10-26T11:39:47.071706Z"
+      }
+    },
+    {
+      "record": "DoubleEntry::Line",
+      "attributes": {
+        "id": 2,
+        "account": "checking",
+        "scope": "1",
+        "code": "deposit",
+        "amount": 100,
+        "balance": 100,
+        "partner_id": 1,
+        "partner_account": "bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:47.070031Z",
+        "updated_at": "2026-10-26T11:39:47.070031Z"
+      }
+    }
+  ],
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [
+      {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "code": "deposit",
+        "amount": -100,
+        "balance": -100,
+        "partner_id": 2,
+        "partner_account": "checking",
+        "partner_scope": "1",
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:47.068112Z",
+        "updated_at": "2026-10-26T11:39:47.071706Z"
+      },
+      {
+        "id": 2,
+        "account": "checking",
+        "scope": "1",
+        "code": "deposit",
+        "amount": 100,
+        "balance": 100,
+        "partner_id": 1,
+        "partner_account": "bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:47.070031Z",
+        "updated_at": "2026-10-26T11:39:47.070031Z"
+      }
+    ],
+    "double_entry_account_balances": [
+      {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "balance": -100,
+        "created_at": "2026-10-26T11:39:47.051799Z",
+        "updated_at": "2026-10-26T11:39:47.065004Z"
+      },
+      {
+        "id": 2,
+        "account": "checking",
+        "scope": "1",
+        "balance": 100,
+        "created_at": "2026-10-26T11:39:47.057294Z",
+        "updated_at": "2026-10-26T11:39:47.066373Z"
+      }
+    ],
+    "double_entry_line_metadata": [
+      {
+        "id": 1,
+        "line_id": 1,
+        "key": "country",
+        "value": "AU",
+        "created_at": "2026-10-26T11:39:47.080864Z",
+        "updated_at": "2026-10-26T11:39:47.080864Z"
+      },
+      {
+        "id": 2,
+        "line_id": 2,
+        "key": "country",
+        "value": "AU",
+        "created_at": "2026-10-26T11:39:47.083424Z",
+        "updated_at": "2026-10-26T11:39:47.083424Z"
+      },
+      {
+        "id": 3,
+        "line_id": 1,
+        "key": "tax",
+        "value": "GST",
+        "created_at": "2026-10-26T11:39:47.085190Z",
+        "updated_at": "2026-10-26T11:39:47.085190Z"
+      },
+      {
+        "id": 4,
+        "line_id": 2,
+        "key": "tax",
+        "value": "GST",
+        "created_at": "2026-10-26T11:39:47.086954Z",
+        "updated_at": "2026-10-26T11:39:47.086954Z"
+      },
+      {
+        "id": 5,
+        "line_id": 1,
+        "key": "tax",
+        "value": "VAT",
+        "created_at": "2026-10-26T11:39:47.088607Z",
+        "updated_at": "2026-10-26T11:39:47.088607Z"
+      },
+      {
+        "id": 6,
+        "line_id": 2,
+        "key": "tax",
+        "value": "VAT",
+        "created_at": "2026-10-26T11:39:47.090114Z",
+        "updated_at": "2026-10-26T11:39:47.090114Z"
+      },
+      {
+        "id": 7,
+        "line_id": 1,
+        "key": "n",
+        "value": "1",
+        "created_at": "2026-10-26T11:39:47.091594Z",
+        "updated_at": "2026-10-26T11:39:47.091594Z"
+      },
+      {
+        "id": 8,
+        "line_id": 2,
+        "key": "n",
+        "value": "1",
+        "created_at": "2026-10-26T11:39:47.093184Z",
+        "updated_at": "2026-10-26T11:39:47.093184Z"
+      },
+      {
+        "id": 9,
+        "line_id": 1,
+        "key": "nested",
+        "value": "[:a, 1]",
+        "created_at": "2026-10-26T11:39:47.094811Z",
+        "updated_at": "2026-10-26T11:39:47.094811Z"
+      },
+      {
+        "id": 10,
+        "line_id": 2,
+        "key": "nested",
+        "value": "[:a, 1]",
+        "created_at": "2026-10-26T11:39:47.096232Z",
+        "updated_at": "2026-10-26T11:39:47.096232Z"
+      }
+    ],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (0.7ms)  BEGIN",
+    "User Create (1.9ms)  INSERT INTO \"users\" (\"username\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3) RETURNING \"id\"  [[\"username\", \"alice\"], [\"created_at\", \"2026-10-26 11:39:47.040076\"], [\"updated_at\", \"2026-10-26 11:39:47.040076\"]]",
+    "TRANSACTION (1.6ms)  COMMIT",
+    "TRANSACTION (0.5ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.6ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (0.8ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" = $1 AND \"double_entry_account_balances\".\"account\" = $2 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $3 FOR UPDATE  [[\"scope\", \"1\"], [\"account\", \"checking\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.4ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.0ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (1.2ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"bank\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:47.051799\"], [\"updated_at\", \"2026-10-26 11:39:47.051799\"]]",
+    "TRANSACTION (1.5ms)  COMMIT",
+    "DoubleEntry::Line Pluck (0.9ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 AND \"double_entry_lines\".\"scope\" = $2 ORDER BY id DESC LIMIT $3  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (1.2ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"scope\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:47.057294\"], [\"updated_at\", \"2026-10-26 11:39:47.057294\"]]",
+    "TRANSACTION (1.6ms)  COMMIT",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.3ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (0.7ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" = $1 AND \"double_entry_account_balances\".\"account\" = $2 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $3 FOR UPDATE  [[\"scope\", \"1\"], [\"account\", \"checking\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.6ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", -100], [\"updated_at\", \"2026-10-26 11:39:47.065004\"], [\"id\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.6ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", 100], [\"updated_at\", \"2026-10-26 11:39:47.066373\"], [\"id\", 2]]",
+    "DoubleEntry::Line Create (1.2ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_account\", \"partner_scope\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING \"id\"  [[\"account\", \"bank\"], [\"code\", \"deposit\"], [\"amount\", -100], [\"balance\", -100], [\"partner_account\", \"checking\"], [\"partner_scope\", \"1\"], [\"created_at\", \"2026-10-26 11:39:47.068112\"], [\"updated_at\", \"2026-10-26 11:39:47.068112\"]]",
+    "DoubleEntry::Line Create (0.7ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"scope\", \"code\", \"amount\", \"balance\", \"partner_id\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING \"id\"  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"code\", \"deposit\"], [\"amount\", 100], [\"balance\", 100], [\"partner_id\", 1], [\"partner_account\", \"bank\"], [\"created_at\", \"2026-10-26 11:39:47.070031\"], [\"updated_at\", \"2026-10-26 11:39:47.070031\"]]",
+    "DoubleEntry::Line Update (0.7ms)  UPDATE \"double_entry_lines\" SET \"partner_id\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"partner_id\", 2], [\"updated_at\", \"2026-10-26 11:39:47.071706\"], [\"id\", 1]]",
+    "DoubleEntry::LineMetadata Create (1.1ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 1], [\"key\", \"country\"], [\"value\", \"AU\"], [\"created_at\", \"2026-10-26 11:39:47.080864\"], [\"updated_at\", \"2026-10-26 11:39:47.080864\"]]",
+    "DoubleEntry::LineMetadata Create (0.8ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 2], [\"key\", \"country\"], [\"value\", \"AU\"], [\"created_at\", \"2026-10-26 11:39:47.083424\"], [\"updated_at\", \"2026-10-26 11:39:47.083424\"]]",
+    "DoubleEntry::LineMetadata Create (0.8ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 1], [\"key\", \"tax\"], [\"value\", \"GST\"], [\"created_at\", \"2026-10-26 11:39:47.085190\"], [\"updated_at\", \"2026-10-26 11:39:47.085190\"]]",
+    "DoubleEntry::LineMetadata Create (0.8ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 2], [\"key\", \"tax\"], [\"value\", \"GST\"], [\"created_at\", \"2026-10-26 11:39:47.086954\"], [\"updated_at\", \"2026-10-26 11:39:47.086954\"]]",
+    "DoubleEntry::LineMetadata Create (0.7ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 1], [\"key\", \"tax\"], [\"value\", \"VAT\"], [\"created_at\", \"2026-10-26 11:39:47.088607\"], [\"updated_at\", \"2026-10-26 11:39:47.088607\"]]",
+    "DoubleEntry::LineMetadata Create (0.7ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 2], [\"key\", \"tax\"], [\"value\", \"VAT\"], [\"created_at\", \"2026-10-26 11:39:47.090114\"], [\"updated_at\", \"2026-10-26 11:39:47.090114\"]]",
+    "DoubleEntry::LineMetadata Create (0.7ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 1], [\"key\", \"n\"], [\"value\", \"1\"], [\"created_at\", \"2026-10-26 11:39:47.091594\"], [\"updated_at\", \"2026-10-26 11:39:47.091594\"]]",
+    "DoubleEntry::LineMetadata Create (0.7ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 2], [\"key\", \"n\"], [\"value\", \"1\"], [\"created_at\", \"2026-10-26 11:39:47.093184\"], [\"updated_at\", \"2026-10-26 11:39:47.093184\"]]",
+    "DoubleEntry::LineMetadata Create (0.7ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 1], [\"key\", \"nested\"], [\"value\", \"[:a, 1]\"], [\"created_at\", \"2026-10-26 11:39:47.094811\"], [\"updated_at\", \"2026-10-26 11:39:47.094811\"]]",
+    "DoubleEntry::LineMetadata Create (1.3ms)  INSERT INTO \"double_entry_line_metadata\" (\"line_id\", \"key\", \"value\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"line_id\", 2], [\"key\", \"nested\"], [\"value\", \"[:a, 1]\"], [\"created_at\", \"2026-10-26 11:39:47.096232\"], [\"updated_at\", \"2026-10-26 11:39:47.096232\"]]",
+    "TRANSACTION (1.8ms)  COMMIT"
+  ],
+  "sql_truncated": false
+}

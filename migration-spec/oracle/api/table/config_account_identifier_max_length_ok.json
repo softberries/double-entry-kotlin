@@ -1,0 +1,23 @@
+{
+  "id": "config_account_identifier_max_length_ok",
+  "description": "account_identifier_max_length=5, identifier of 5 chars",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": {
+    "account": "abcde",
+    "scoped": false,
+    "currency": "USD"
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_metadata": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [],
+  "sql_truncated": false
+}

@@ -1,0 +1,12 @@
+rake build                                # Build double_entry-2.0.2.gem into the pkg directory
+rake build:checksum                       # Generate SHA512 checksum of double_entry-2.0.2.gem into the checksums directory
+rake clean                                # Remove any temporary products
+rake clobber                              # Remove any generated files
+rake default                              # 
+rake install                              # Build and install double_entry-2.0.2.gem into system gems
+rake install:local                        # Build and install double_entry-2.0.2.gem into system gems without network access
+rake release[remote]                      # Create tag v2.0.2 and build and push double_entry-2.0.2.gem to https://rubygems.org
+rake release:guard_clean                  # 
+rake release:rubygem_push                 # 
+rake release:source_control_push[remote]  # 
+rake spec                                 # Run RSpec code examples

@@ -1,0 +1,28 @@
+{
+  "id": "account_scoped",
+  "description": "DoubleEntry.account(:checking, scope: user)",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": {
+    "account_instance": "#{Account account: checking scope: #<User:0x0000783a694af288> currency: USD}",
+    "identifier": "checking",
+    "scope_identity": "1",
+    "currency": "USD"
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_metadata": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (0.7ms)  BEGIN",
+    "User Create (2.0ms)  INSERT INTO \"users\" (\"username\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3) RETURNING \"id\"  [[\"username\", \"alice\"], [\"created_at\", \"2026-10-26 11:39:44.598211\"], [\"updated_at\", \"2026-10-26 11:39:44.598211\"]]",
+    "TRANSACTION (1.8ms)  COMMIT"
+  ],
+  "sql_truncated": false
+}

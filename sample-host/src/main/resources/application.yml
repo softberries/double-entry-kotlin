@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: double-entry-sample-host
+  datasource:
+    url: ${SAMPLE_HOST_DB_URL:jdbc:postgresql://localhost:5432/double_entry}
+    username: ${SAMPLE_HOST_DB_USERNAME:double_entry}
+    password: ${SAMPLE_HOST_DB_PASSWORD:double_entry}
+  # The library migrates its own tables (history table double_entry_schema_history); this host has no own migrations.
+  flyway:
+    enabled: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      # Keep the body `{"status":...}` everywhere; on Kubernetes Boot would add liveness/readiness groups.
+      probes:
+        enabled: false

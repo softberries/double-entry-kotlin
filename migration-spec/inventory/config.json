@@ -1,0 +1,59 @@
+{
+  "DoubleEntry.config": [
+    "account_identifier_max_length",
+    "account_identifier_max_length=",
+    "accounts",
+    "accounts=",
+    "code_max_length",
+    "code_max_length=",
+    "define_accounts",
+    "define_transfers",
+    "json_metadata",
+    "json_metadata=",
+    "scope_identifier_max_length",
+    "scope_identifier_max_length=",
+    "transfers",
+    "transfers="
+  ],
+  "DoubleEntry::Locking.configuration": [
+    "running_inside_transactional_fixtures",
+    "running_inside_transactional_fixtures="
+  ],
+  "DoubleEntry.table_name_prefix": "double_entry_",
+  "notifications": [
+    "deadlock_restart.double_entry",
+    "duplicate_ignore.double_entry",
+    "deadlock_retry.double_entry"
+  ],
+  "generator_options": {
+    "skip_namespace": {
+      "type": "boolean",
+      "default": false
+    },
+    "skip_collision_check": {
+      "type": "boolean",
+      "default": false
+    },
+    "force": {
+      "type": "boolean",
+      "default": null
+    },
+    "pretend": {
+      "type": "boolean",
+      "default": null
+    },
+    "quiet": {
+      "type": "boolean",
+      "default": null
+    },
+    "skip": {
+      "type": "boolean",
+      "default": null
+    },
+    "json_metadata": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "railtie": "DoubleEntry::Railtie (lib/double_entry.rb:25)"
+}

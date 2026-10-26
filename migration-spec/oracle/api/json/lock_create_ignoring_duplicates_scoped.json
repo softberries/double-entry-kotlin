@@ -1,0 +1,43 @@
+{
+  "id": "lock_create_ignoring_duplicates_scoped",
+  "description": "AccountBalance.create_ignoring_duplicates! twice for a scoped account (duplicate ignored + notification)",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": 1,
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [
+      {
+        "id": 1,
+        "account": "checking",
+        "scope": "1",
+        "balance": 1,
+        "created_at": "2026-10-26T11:39:26.006069Z",
+        "updated_at": "2026-10-26T11:39:26.006069Z"
+      }
+    ],
+    "double_entry_line_checks": []
+  },
+  "notifications": [
+    {
+      "event": "duplicate_ignore.double_entry",
+      "exception": "PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint \"index_account_balances_on_scope_and_account\"\nDETAIL:  Key (scope, account)=(1, checking) already exists.\n"
+    }
+  ],
+  "sql": [
+    "TRANSACTION (0.8ms)  BEGIN",
+    "User Create (5.8ms)  INSERT INTO \"users\" (\"username\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3) RETURNING \"id\"  [[\"username\", \"alice\"], [\"created_at\", \"2026-10-26 11:39:25.991354\"], [\"updated_at\", \"2026-10-26 11:39:25.991354\"]]",
+    "TRANSACTION (5.5ms)  COMMIT",
+    "TRANSACTION (0.9ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (3.7ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"scope\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"balance\", 1], [\"created_at\", \"2026-10-26 11:39:26.006069\"], [\"updated_at\", \"2026-10-26 11:39:26.006069\"]]",
+    "TRANSACTION (7.5ms)  COMMIT",
+    "TRANSACTION (1.1ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (3.0ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"scope\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"balance\", 2], [\"created_at\", \"2026-10-26 11:39:26.020216\"], [\"updated_at\", \"2026-10-26 11:39:26.020216\"]]",
+    "TRANSACTION (1.6ms)  ROLLBACK",
+    "DoubleEntry::AccountBalance Count (1.9ms)  SELECT COUNT(*) FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"account\" = $1  [[\"account\", \"checking\"]]"
+  ],
+  "sql_truncated": false
+}
