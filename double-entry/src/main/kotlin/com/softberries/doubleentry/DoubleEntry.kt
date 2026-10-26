@@ -63,15 +63,17 @@ class DoubleEntry internal constructor(
     ): Money = calculator.calculate(account, options)
 
     /**
-     * `DoubleEntry.balance(:identifier, scope:, …)`: resolves the account first, so an unknown or wrongly scoped
-     * identifier throws [com.softberries.doubleentry.errors.UnknownAccount] and a throwing scope identifier propagates,
-     * before any query runs (BR-049).
+     * `DoubleEntry.balance(:identifier, scope:, scope_identity:, …)`: resolves the account first, exactly like [account]
+     * (`double_entry.rb:143`, `account.rb:17-18`), so an unknown or wrongly scoped identifier throws
+     * [com.softberries.doubleentry.errors.UnknownAccount] and a throwing scope identifier propagates, before any query
+     * runs (BR-049).
      */
     fun balance(
         identifier: String,
         scope: Any? = null,
+        scopeIdentity: String? = null,
         options: BalanceOptions = BalanceOptions(),
-    ): Money = calculator.calculate(account(identifier, scope), options)
+    ): Money = calculator.calculate(account(identifier, scope, scopeIdentity), options)
 
     /**
      * `DoubleEntry.lock_accounts(*accounts) { … }` (`double_entry.rb:163-165`); see [Locking.lockAccounts]. Returns the

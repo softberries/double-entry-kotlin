@@ -50,6 +50,19 @@ class DoubleEntryBalanceOracleTest : TransferIntegrationTestBase() {
     }
 
     @Test
+    fun `balance by identifier and stored scope identity (balance_symbol_with_scope, scope_identity option)`() {
+        val oracle = OracleScenarios.load("balance_symbol_with_scope")
+        val checking = doubleEntry.account("checking", TestUser(1))
+        doubleEntry.transfer(usd(300), from = doubleEntry.account("bank"), to = checking, code = "deposit")
+
+        val balance = doubleEntry.balance("checking", scopeIdentity = "1")
+
+        balance shouldBe usd(300)
+        MoneyComparator.compare(oracle.result!!, observed(balance)).assertMatches(oracle.id)
+        doubleEntry.balance("checking", scopeIdentity = "2") shouldBe usd(0)
+    }
+
+    @Test
     fun `balance of a scoped identifier without a scope (balance_scoped_without_scope)`() {
         val oracle = OracleScenarios.load("balance_scoped_without_scope")
 
