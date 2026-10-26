@@ -98,6 +98,23 @@ a Flyway migration shipped in the jar, and configuration moves to Spring propert
 - [ ] Production indexes match the generator names (U-005). Baselining never touches existing indexes.
 - [ ] No `double_entry_line_metadata` table in use (D-004).
 
+## Balance validation (LineCheck)
+
+`LineCheckService.perform(fixer)` checks the lines written since the last run (running balances, then the cached
+balance of every touched account) and stores a row in `double_entry_line_checks`. Pass the `AccountFixer` bean to
+repair what it finds. The library schedules nothing (as the Ruby gem); run it from the host, e.g. hourly to daily,
+outside any transaction:
+
+```kotlin
+@Component
+class LineCheckJob(private val lineCheck: LineCheckService, private val fixer: AccountFixer) {
+    @Scheduled(cron = "0 0 * * * *")
+    fun run() {
+        lineCheck.perform(fixer)
+    }
+}
+```
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
