@@ -35,9 +35,14 @@ Requirements: JDK 21 and a Docker daemon (Testcontainers starts `postgres:17`).
 ./gradlew test             # tests only
 ./gradlew ktlintFormat     # fix formatting
 ./gradlew clean            # replaces `rake clean` / `rake clobber`
+./gradlew publishToMavenLocal   # replaces `rake install`: com.softberries:double-entry:<version> (+ sources/javadoc jars, POM) into ~/.m2
 ```
 
-The Ruby release tasks (`rake release`, gem publication) are replaced by Gradle publishing in M-017.
+Releases replace `rake release[remote]`: push a tag `vX.Y.Z` and `.github/workflows/release.yml` builds, tests and
+publishes `com.softberries:double-entry:X.Y.Z` to GitHub Packages (U-010 proposal; see
+[`docs/host-guide.md` §9](docs/host-guide.md#9-releasing-the-library)). The library is MIT-licensed like the gem
+([LICENSE](LICENSE)).
+
 CI (`.github/workflows/ci.yml`) runs the jobs `ktlint` and `build` on every push to `main` and on every pull request.
 
 Running the sample host locally (needs a PostgreSQL database):
@@ -48,6 +53,10 @@ curl -i localhost:8080/actuator/health   # 200 {"status":"UP"}; 503 {"status":"D
 ```
 
 ## Using the library in a host application
+
+**Migrating a Rails host?** Read [`docs/host-guide.md`](docs/host-guide.md): Gradle dependency, the Ruby initializer
+side by side with the Kotlin configuration, properties, Flyway coexistence, transactions, scheduling, the deviations
+X-01..X-11 and the cut-over checklist. The summary below is the short version.
 
 Add the dependency and declare the accounts and transfers (the Ruby `config/initializers/double_entry.rb`) as a
 `DoubleEntryConfiguration` bean. Pass the bound `DoubleEntryProperties` to keep the `double-entry.*` settings:
