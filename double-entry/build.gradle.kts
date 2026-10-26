@@ -39,6 +39,8 @@ dependencies {
     testFixturesApi(libs.testcontainers.junit.jupiter)
     testFixturesApi(libs.kotest.assertions.core)
     testFixturesApi(libs.datasource.proxy)
+    // Oracle replay harness (parity/): reads oracle/api/json with Jackson.
+    testFixturesApi(libs.jackson.module.kotlin)
     testFixturesImplementation(libs.postgresql)
 
     testImplementation(libs.kotest.assertions.json)
