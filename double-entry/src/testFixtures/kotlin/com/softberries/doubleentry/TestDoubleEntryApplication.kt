@@ -1,18 +1,22 @@
 package com.softberries.doubleentry
 
 import com.softberries.doubleentry.config.ConfigConfiguration
+import com.softberries.doubleentry.config.DoubleEntryConfigurer
 import com.softberries.doubleentry.testing.MutableClock
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.beans.factory.config.BeanPostProcessor
-import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.SpringBootConfiguration
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 
 /**
- * Boots every feature configuration of the library for tests. Feature units add a `<Feature>Configuration` in their
- * package and never edit this class. M-014 replaces component scanning with the real `@AutoConfiguration`.
+ * Boots the library for tests the way a host does: through `DoubleEntryAutoConfiguration`, with no component
+ * scanning of the library packages. Feature tests contribute their accounts and transfers with an `@Import`ed
+ * `@TestConfiguration` that declares `DoubleEntryConfigurer` beans.
  */
-@SpringBootApplication(scanBasePackages = ["com.softberries.doubleentry"])
+@SpringBootConfiguration
+@EnableAutoConfiguration
 class TestDoubleEntryApplication {
     companion object {
         /** Primary because the same instance is also registered as `doubleEntryClock` (see below). */
@@ -31,5 +35,13 @@ class TestDoubleEntryApplication {
                     beanName: String,
                 ): Any = if (beanName == ConfigConfiguration.DOUBLE_ENTRY_CLOCK) clock.getObject() else bean
             }
+
+        /**
+         * Contributes nothing, so tests that need no definitions still get a (empty) configuration: a host without any
+         * configuration fails to start (`AutoConfigurationTest`).
+         */
+        @Bean
+        @JvmStatic
+        fun emptyTestDefinitions(): DoubleEntryConfigurer = DoubleEntryConfigurer { }
     }
 }
