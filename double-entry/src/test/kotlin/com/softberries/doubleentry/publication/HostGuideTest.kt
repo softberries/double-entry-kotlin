@@ -8,6 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -30,6 +31,20 @@ class HostGuideTest {
         fun `1 Gradle dependency`() {
             section(1) shouldContain "implementation(\"com.softberries:double-entry:"
             section(1) shouldContain "https://maven.pkg.github.com/softberries/double-entry-kotlin"
+            section(1) shouldContain "dependencyResolutionManagement {"
+        }
+
+        @Test
+        fun `1 minimum versions follow the APIs the library uses`() {
+            // TransactionDepthTracker uses Spring Framework 6.1 listeners (Boot 3.2); compiled with Kotlin 2.2.
+            section(1) shouldContain "Spring Boot 3.2 or later"
+            section(1) shouldContain "Kotlin 2.1 or later"
+        }
+
+        @Test
+        fun `1 own EntityScan or EnableJpaRepositories must include the library package`() {
+            section(1) shouldContain "`@EntityScan` or `@EnableJpaRepositories`"
+            section(1) shouldContain "`com.softberries.doubleentry`"
         }
 
         @Test
@@ -64,6 +79,8 @@ class HostGuideTest {
             s shouldContain "spring.flyway.baseline-on-migrate=true"
             s shouldContain "baselineOnMigrate"
             s shouldContain "ddl-auto=validate"
+            s shouldContain "Host Flyway on a new, empty database"
+            s shouldContain "spring.flyway.baseline-version=0"
         }
 
         @Test
@@ -73,6 +90,9 @@ class HostGuideTest {
             s shouldContain "@Transactional"
             s shouldContain "lockAccounts"
             s shouldContain "runningInsideTransactionalFixtures"
+            // Only lock acquisition is restarted on a deadlock (RestartableTransaction, locking_extensions.rb:16-26).
+            s shouldContain "A deadlock inside the block is not retried"
+            s shouldNotContain "the block may run more than once"
         }
 
         @Test

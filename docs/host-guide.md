@@ -38,15 +38,18 @@ GitHub Packages needs credentials even for reads: a GitHub user and a token with
 `GITHUB_TOKEN` is enough for repositories of the same owner.
 
 ```kotlin
-// settings.gradle.kts (or build.gradle.kts) of the host
-repositories {
-    mavenCentral()
-    maven {
-        name = "doubleEntry"
-        url = uri("https://maven.pkg.github.com/softberries/double-entry-kotlin")
-        credentials {
-            username = providers.gradleProperty("gpr.user").orElse(providers.environmentVariable("GITHUB_ACTOR")).get()
-            password = providers.gradleProperty("gpr.key").orElse(providers.environmentVariable("GITHUB_TOKEN")).get()
+// settings.gradle.kts of the host (a host without central repository management puts the inner
+// `repositories { … }` block into build.gradle.kts instead)
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "doubleEntry"
+            url = uri("https://maven.pkg.github.com/softberries/double-entry-kotlin")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orElse(providers.environmentVariable("GITHUB_ACTOR")).get()
+                password = providers.gradleProperty("gpr.key").orElse(providers.environmentVariable("GITHUB_TOKEN")).get()
+            }
         }
     }
 }
@@ -64,13 +67,18 @@ What the dependency brings:
   module) at runtime. The Spring Boot BOM the library was built with (3.5.x) is imported in the POM.
 - A Spring Boot auto-configuration (`DoubleEntryAutoConfiguration`, listed in
   `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`). It replaces the gem's Railtie.
-  No `@ComponentScan` of the library packages is needed.
+  No `@ComponentScan` of the library packages is needed. The auto-configuration registers the library's JPA entities
+  and Spring Data repositories by adding `com.softberries.doubleentry` to the auto-configuration packages. A host that
+  declares its own `@EntityScan` or `@EnableJpaRepositories` replaces that scan and must list
+  `com.softberries.doubleentry` there as well, or startup fails.
 - Configuration metadata for the `double-entry.*` properties (`META-INF/spring-configuration-metadata.json`), so IDEs
   complete them in `application.yml`.
 - The Flyway migrations in `classpath:db/double_entry/migration`. They replace `rails generate double_entry:install`
   and `rake db:migrate` (section 4).
 
-Requirements: JDK 21, Spring Boot 3.x, PostgreSQL 15 or later.
+Requirements: JDK 21; Spring Boot 3.2 or later (Spring Framework 6.1 transaction listeners are used; the library is
+built and tested with Boot 3.5.x); Kotlin 2.1 or later if the host is written in Kotlin (the library is compiled with
+Kotlin 2.2); PostgreSQL 15 or later.
 
 ## 2. Accounts and transfers: the Ruby initializer in Kotlin
 
@@ -285,6 +293,10 @@ Rules:
   If the host's history table does not exist yet (the host adopts Flyway at this cut-over), set
   `spring.flyway.baseline-on-migrate=true`. Add `spring.flyway.baseline-version=0` if the host's own V1 must still run.
   If the Rails app kept its schema in `schema_migrations`, that table stays and is ignored.
+- **Host Flyway on a new, empty database.** The order of the host's Flyway and the library's migrator at startup is not
+  defined. If the library runs first, the host's Flyway finds the double_entry tables and stops with "non-empty schema
+  without schema history table". Set `spring.flyway.baseline-on-migrate=true` and `spring.flyway.baseline-version=0`
+  so the host's own migrations still run from V1 in either order.
 - **Hibernate.** Use `spring.jpa.hibernate.ddl-auto=validate` or `none`. Never let Hibernate create or update these tables.
 - **Managing the schema yourself.** Set `double-entry.flyway.enabled=false` and apply the SQL files from the jar
   (`db/double_entry/migration/*.sql`) with your own tooling, in version order.
@@ -334,8 +346,10 @@ class Purchases(
 - `lockAccounts` returns the block's value (X-05). After `lock.rollback()` the block runs to its end, the transaction
   rolls back, and the block's value is still returned.
 - Nested `lockAccounts` calls are allowed if they lock a subset of the outer accounts. Otherwise they throw `LockNotHeld`.
-- A deadlock (SQLSTATE `40P01`) restarts the whole lock transaction, so the block may run more than once. Keep side
-  effects outside the database (emails, HTTP calls) after `lockAccounts` returns.
+- A deadlock (SQLSTATE `40P01`) while the locks are being taken rolls back and restarts the lock transaction before the
+  block runs (`deadlock_restart.double_entry`, as in Ruby). A deadlock inside the block is not retried: it propagates
+  to the caller and the transaction rolls back, so the block runs at most once. Retry at the caller if you need it,
+  and keep side effects outside the database (emails, HTTP calls) until `lockAccounts` has returned.
 - **Tests.** Spring's test-managed transactions (`@Transactional` on a test class) break the rule, as Rails
   transactional fixtures did. Prefer no test transaction and truncate the tables between tests. Otherwise declare
   `@Bean fun lockingSettings() = LockingSettings(runningInsideTransactionalFixtures = true)` in the test context. It
@@ -433,7 +447,8 @@ Run these checks on **every** database before the first Kotlin start. Tick each 
       HAVING count(*) > 1
       ORDER BY account, scope;
       ```
-      Usually only unscoped accounts (`scope IS NULL`) appear. The kept row is the one the gem locks and updates.
+      Only unscoped accounts (`scope IS NULL`) can appear: the old unique index already prevents duplicates of scoped
+      rows. The kept row is the one the gem locks and updates.
       After the migration, run `LineCheckService.perform(accountFixer)` once to confirm the cached balances.
 - [ ] **U-003: the host runs Rails 7.2 or newer if Ruby and Kotlin write concurrently** (mixed writers, D-017). Only
       Rails 7.2/8.0/8.1 are in the gem's CI matrix, and the mixed-writer protocol was verified against ActiveRecord 8.1.4.
