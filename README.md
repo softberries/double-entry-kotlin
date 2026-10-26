@@ -92,6 +92,9 @@ a Flyway migration shipped in the jar, and configuration moves to Spring propert
 - [ ] PostgreSQL 15 or newer (`NULLS NOT DISTINCT`, D-005).
 - [ ] The Ruby app's ActiveRecord `default_timezone` is `:utc` (U-014). The Kotlin library always writes UTC timestamps
       (`hibernate.jdbc.time_zone=UTC` is set by the library).
+- [ ] The host accepts UTC JDBC timestamps for its own entities too. The library sets `hibernate.jdbc.time_zone=UTC`
+      through a `HibernatePropertiesCustomizer`, which applies to the host's whole persistence unit and overrides a
+      host-configured `spring.jpa.properties.hibernate.jdbc.time_zone`.
 - [ ] Production indexes match the generator names (U-005). Baselining never touches existing indexes.
 - [ ] No `double_entry_line_metadata` table in use (D-004).
 
