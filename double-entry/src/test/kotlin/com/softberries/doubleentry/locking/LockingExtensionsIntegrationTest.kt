@@ -177,6 +177,23 @@ class LockingExtensionsIntegrationTest : BalanceIntegrationTest() {
     }
 
     @Test
+    fun `a checked SQLException deadlock thrown straight from JDBC also restarts`() {
+        val runs = AtomicInteger()
+
+        val result =
+            restartable.run {
+                restartable.withRestartOnDeadlock {
+                    if (runs.incrementAndGet() < 2) throw SQLException("ERROR: deadlock detected", "40P01")
+                    "ok"
+                }
+            }
+
+        result shouldBe "ok"
+        runs.get() shouldBe 2
+        recorded.events.map { it.type } shouldContainExactly listOf(DoubleEntryEventType.DEADLOCK_RESTART)
+    }
+
+    @Test
     fun `a deadlock twice then success runs the block 3 times in fresh transactions, with 2 events and 2 log lines`() {
         val runs = AtomicInteger()
 

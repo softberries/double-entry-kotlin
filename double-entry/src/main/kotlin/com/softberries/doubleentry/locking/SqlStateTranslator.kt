@@ -56,7 +56,8 @@ internal object SqlStateTranslator {
     inline fun <T> translatingLockWaitTimeout(block: () -> T): T =
         try {
             block()
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
+            // Exception, not RuntimeException: Kotlin code may throw a checked SQLException straight from JDBC.
             throw translate(e)
         }
 

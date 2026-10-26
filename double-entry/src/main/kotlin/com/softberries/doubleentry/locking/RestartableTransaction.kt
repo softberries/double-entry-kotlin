@@ -40,7 +40,8 @@ class RestartableTransaction(
     fun <T> withRestartOnDeadlock(block: () -> T): T =
         try {
             block()
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
+            // Exception, not RuntimeException: Kotlin code may throw a checked SQLException straight from JDBC.
             if (!SqlStateTranslator.isDeadlock(e)) throw e
             publisher.publish(DoubleEntryEventType.DEADLOCK_RESTART, e)
             throw RestartTransactionSignal(e)

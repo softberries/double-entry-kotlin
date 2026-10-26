@@ -36,7 +36,7 @@ class SqlStateTranslatorTest {
 
         SqlStateTranslator.sqlStateOf(wrapped) shouldBe "40P01"
         SqlStateTranslator.isDeadlock(wrapped) shouldBe true
-        SqlStateTranslator.isUniqueViolation(DuplicateKeyException("dup", sql("23505"))) shouldBe true
+        SqlStateTranslator.sqlStateOf(DuplicateKeyException("dup", sql("23505"))) shouldBe "23505"
         SqlStateTranslator.isLockWaitTimeout(RuntimeException(sql("55P03"))) shouldBe true
     }
 
@@ -55,7 +55,7 @@ class SqlStateTranslatorTest {
             val error = RuntimeException(text, sql(null, text))
             SqlStateTranslator.sqlStateOf(error).shouldBeNull()
             SqlStateTranslator.isDeadlock(error) shouldBe false
-            SqlStateTranslator.isUniqueViolation(error) shouldBe false
+            SqlStateTranslator.isLockWaitTimeout(error) shouldBe false
             SqlStateTranslator.translate(error) shouldBeSameInstanceAs error
         }
         SqlStateTranslator.isDeadlock(sql("42P01", "deadlock detected")) shouldBe false
@@ -87,6 +87,16 @@ class SqlStateTranslatorTest {
 
         thrown.message shouldBe "DoubleEntry::Locking::LockWaitTimeout"
         thrown.cause shouldBeSameInstanceAs error
+    }
+
+    @Test
+    fun `a checked SQLException thrown straight from JDBC is translated too`() {
+        val timeout = sql("55P03")
+        val thrown = shouldThrow<LockWaitTimeout> { SqlStateTranslator.translatingLockWaitTimeout { throw timeout } }
+        thrown.cause shouldBeSameInstanceAs timeout
+
+        val other = sql("42P01")
+        shouldThrow<SQLException> { SqlStateTranslator.translatingLockWaitTimeout { throw other } } shouldBeSameInstanceAs other
     }
 
     @Test
