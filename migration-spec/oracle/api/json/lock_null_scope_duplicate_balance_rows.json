@@ -1,0 +1,43 @@
+{
+  "id": "lock_null_scope_duplicate_balance_rows",
+  "description": "PG unique index (scope, account) does not prevent two NULL-scope rows for the same account",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": 2,
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [
+      {
+        "id": 1,
+        "account": "cash",
+        "scope": null,
+        "balance": 1,
+        "created_at": "2026-10-26T11:39:25.889885Z",
+        "updated_at": "2026-10-26T11:39:25.889885Z"
+      },
+      {
+        "id": 2,
+        "account": "cash",
+        "scope": null,
+        "balance": 2,
+        "created_at": "2026-10-26T11:39:25.904655Z",
+        "updated_at": "2026-10-26T11:39:25.904655Z"
+      }
+    ],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (1.5ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (6.1ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"cash\"], [\"balance\", 1], [\"created_at\", \"2026-10-26 11:39:25.889885\"], [\"updated_at\", \"2026-10-26 11:39:25.889885\"]]",
+    "TRANSACTION (3.9ms)  COMMIT",
+    "TRANSACTION (0.8ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (3.4ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"cash\"], [\"balance\", 2], [\"created_at\", \"2026-10-26 11:39:25.904655\"], [\"updated_at\", \"2026-10-26 11:39:25.904655\"]]",
+    "TRANSACTION (4.9ms)  COMMIT",
+    "DoubleEntry::AccountBalance Count (2.1ms)  SELECT COUNT(*) FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"account\" = $1  [[\"account\", \"cash\"]]"
+  ],
+  "sql_truncated": false
+}

@@ -1,0 +1,26 @@
+{
+  "id": "account_scope_lambda_raises",
+  "description": "Scope lambda rejects a non-User scope object",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": null,
+  "exception": {
+    "class": "RuntimeError",
+    "message": "not a User",
+    "ancestors": [
+      "RuntimeError",
+      "StandardError"
+    ]
+  },
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_metadata": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [],
+  "sql_truncated": false
+}

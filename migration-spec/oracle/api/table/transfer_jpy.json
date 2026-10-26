@@ -1,0 +1,126 @@
+{
+  "id": "transfer_jpy",
+  "description": "JPY transfer (0 decimal subunits): Money.new(500, \"JPY\")",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": [
+    {
+      "record": "DoubleEntry::Line",
+      "attributes": {
+        "id": 1,
+        "account": "jpy_bank",
+        "scope": null,
+        "code": "jpy_in",
+        "amount": -500,
+        "balance": -500,
+        "partner_id": 2,
+        "partner_account": "jpy_wallet",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:46.230644Z",
+        "updated_at": "2026-10-26T11:39:46.234092Z"
+      }
+    },
+    {
+      "record": "DoubleEntry::Line",
+      "attributes": {
+        "id": 2,
+        "account": "jpy_wallet",
+        "scope": null,
+        "code": "jpy_in",
+        "amount": 500,
+        "balance": 500,
+        "partner_id": 1,
+        "partner_account": "jpy_bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:46.232627Z",
+        "updated_at": "2026-10-26T11:39:46.232627Z"
+      }
+    }
+  ],
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [
+      {
+        "id": 1,
+        "account": "jpy_bank",
+        "scope": null,
+        "code": "jpy_in",
+        "amount": -500,
+        "balance": -500,
+        "partner_id": 2,
+        "partner_account": "jpy_wallet",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:46.230644Z",
+        "updated_at": "2026-10-26T11:39:46.234092Z"
+      },
+      {
+        "id": 2,
+        "account": "jpy_wallet",
+        "scope": null,
+        "code": "jpy_in",
+        "amount": 500,
+        "balance": 500,
+        "partner_id": 1,
+        "partner_account": "jpy_bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:46.232627Z",
+        "updated_at": "2026-10-26T11:39:46.232627Z"
+      }
+    ],
+    "double_entry_account_balances": [
+      {
+        "id": 1,
+        "account": "jpy_bank",
+        "scope": null,
+        "balance": -500,
+        "created_at": "2026-10-26T11:39:46.206950Z",
+        "updated_at": "2026-10-26T11:39:46.225819Z"
+      },
+      {
+        "id": 2,
+        "account": "jpy_wallet",
+        "scope": null,
+        "balance": 500,
+        "created_at": "2026-10-26T11:39:46.214453Z",
+        "updated_at": "2026-10-26T11:39:46.227853Z"
+      }
+    ],
+    "double_entry_line_metadata": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (0.5ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.6ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"jpy_bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (1.0ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"jpy_wallet\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.7ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.0ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"jpy_bank\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (1.6ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"jpy_bank\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:46.206950\"], [\"updated_at\", \"2026-10-26 11:39:46.206950\"]]",
+    "TRANSACTION (1.8ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.0ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"jpy_wallet\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.6ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (1.4ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"jpy_wallet\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:46.214453\"], [\"updated_at\", \"2026-10-26 11:39:46.214453\"]]",
+    "TRANSACTION (1.7ms)  COMMIT",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.5ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"jpy_bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (1.4ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"jpy_wallet\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.9ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", -500], [\"updated_at\", \"2026-10-26 11:39:46.225819\"], [\"id\", 1]]",
+    "DoubleEntry::AccountBalance Update (1.4ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", 500], [\"updated_at\", \"2026-10-26 11:39:46.227853\"], [\"id\", 2]]",
+    "DoubleEntry::Line Create (1.0ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING \"id\"  [[\"account\", \"jpy_bank\"], [\"code\", \"jpy_in\"], [\"amount\", -500], [\"balance\", -500], [\"partner_account\", \"jpy_wallet\"], [\"created_at\", \"2026-10-26 11:39:46.230644\"], [\"updated_at\", \"2026-10-26 11:39:46.230644\"]]",
+    "DoubleEntry::Line Create (0.6ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_id\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING \"id\"  [[\"account\", \"jpy_wallet\"], [\"code\", \"jpy_in\"], [\"amount\", 500], [\"balance\", 500], [\"partner_id\", 1], [\"partner_account\", \"jpy_bank\"], [\"created_at\", \"2026-10-26 11:39:46.232627\"], [\"updated_at\", \"2026-10-26 11:39:46.232627\"]]",
+    "DoubleEntry::Line Update (0.6ms)  UPDATE \"double_entry_lines\" SET \"partner_id\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"partner_id\", 2], [\"updated_at\", \"2026-10-26 11:39:46.234092\"], [\"id\", 1]]",
+    "TRANSACTION (2.0ms)  COMMIT"
+  ],
+  "sql_truncated": false
+}

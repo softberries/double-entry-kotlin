@@ -1,0 +1,152 @@
+{
+  "id": "transfer_with_metadata",
+  "description": "metadata: {country: \"AU\", tax: [\"GST\",\"VAT\"], n: 1, nested: {a: 1}}",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": [
+    {
+      "record": "DoubleEntry::Line",
+      "attributes": {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "code": "deposit",
+        "amount": -100,
+        "balance": -100,
+        "partner_id": 2,
+        "partner_account": "checking",
+        "partner_scope": "1",
+        "detail_type": null,
+        "detail_id": null,
+        "metadata": {
+          "country": "AU",
+          "tax": [
+            "GST",
+            "VAT"
+          ],
+          "n": 1,
+          "nested": {
+            "a": 1
+          }
+        },
+        "created_at": "2026-10-26T11:39:23.929371Z",
+        "updated_at": "2026-10-26T11:39:23.936893Z"
+      }
+    },
+    {
+      "record": "DoubleEntry::Line",
+      "attributes": {
+        "id": 2,
+        "account": "checking",
+        "scope": "1",
+        "code": "deposit",
+        "amount": 100,
+        "balance": 100,
+        "partner_id": 1,
+        "partner_account": "bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "metadata": {
+          "country": "AU",
+          "tax": [
+            "GST",
+            "VAT"
+          ],
+          "n": 1,
+          "nested": {
+            "a": 1
+          }
+        },
+        "created_at": "2026-10-26T11:39:23.933720Z",
+        "updated_at": "2026-10-26T11:39:23.933720Z"
+      }
+    }
+  ],
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [
+      {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "code": "deposit",
+        "amount": -100,
+        "balance": -100,
+        "partner_id": 2,
+        "partner_account": "checking",
+        "partner_scope": "1",
+        "detail_type": null,
+        "detail_id": null,
+        "metadata": "{\"n\": 1, \"tax\": [\"GST\", \"VAT\"], \"nested\": {\"a\": 1}, \"country\": \"AU\"}",
+        "created_at": "2026-10-26T11:39:23.929371Z",
+        "updated_at": "2026-10-26T11:39:23.936893Z"
+      },
+      {
+        "id": 2,
+        "account": "checking",
+        "scope": "1",
+        "code": "deposit",
+        "amount": 100,
+        "balance": 100,
+        "partner_id": 1,
+        "partner_account": "bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "metadata": "{\"n\": 1, \"tax\": [\"GST\", \"VAT\"], \"nested\": {\"a\": 1}, \"country\": \"AU\"}",
+        "created_at": "2026-10-26T11:39:23.933720Z",
+        "updated_at": "2026-10-26T11:39:23.933720Z"
+      }
+    ],
+    "double_entry_account_balances": [
+      {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "balance": -100,
+        "created_at": "2026-10-26T11:39:23.898759Z",
+        "updated_at": "2026-10-26T11:39:23.922371Z"
+      },
+      {
+        "id": 2,
+        "account": "checking",
+        "scope": "1",
+        "balance": 100,
+        "created_at": "2026-10-26T11:39:23.908521Z",
+        "updated_at": "2026-10-26T11:39:23.925171Z"
+      }
+    ],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (0.8ms)  BEGIN",
+    "User Create (2.2ms)  INSERT INTO \"users\" (\"username\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3) RETURNING \"id\"  [[\"username\", \"alice\"], [\"created_at\", \"2026-10-26 11:39:23.879425\"], [\"updated_at\", \"2026-10-26 11:39:23.879425\"]]",
+    "TRANSACTION (3.3ms)  COMMIT",
+    "TRANSACTION (1.1ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (2.7ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (1.7ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" = $1 AND \"double_entry_account_balances\".\"account\" = $2 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $3 FOR UPDATE  [[\"scope\", \"1\"], [\"account\", \"checking\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (1.4ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.6ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.9ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (2.1ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"bank\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:23.898759\"], [\"updated_at\", \"2026-10-26 11:39:23.898759\"]]",
+    "TRANSACTION (2.8ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.6ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 AND \"double_entry_lines\".\"scope\" = $2 ORDER BY id DESC LIMIT $3  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (1.0ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (2.6ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"scope\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5) RETURNING \"id\"  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:23.908521\"], [\"updated_at\", \"2026-10-26 11:39:23.908521\"]]",
+    "TRANSACTION (1.9ms)  COMMIT",
+    "TRANSACTION (0.5ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.8ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (1.9ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" = $1 AND \"double_entry_account_balances\".\"account\" = $2 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $3 FOR UPDATE  [[\"scope\", \"1\"], [\"account\", \"checking\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Update (1.0ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", -100], [\"updated_at\", \"2026-10-26 11:39:23.922371\"], [\"id\", 1]]",
+    "DoubleEntry::AccountBalance Update (1.1ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", 100], [\"updated_at\", \"2026-10-26 11:39:23.925171\"], [\"id\", 2]]",
+    "DoubleEntry::Line Create (1.9ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_account\", \"partner_scope\", \"metadata\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING \"id\"  [[\"account\", \"bank\"], [\"code\", \"deposit\"], [\"amount\", -100], [\"balance\", -100], [\"partner_account\", \"checking\"], [\"partner_scope\", \"1\"], [\"metadata\", \"{\\\"country\\\":\\\"AU\\\",\\\"tax\\\":[\\\"GST\\\",\\\"VAT\\\"],\\\"n\\\":1,\\\"nested\\\":{\\\"a\\\":1}}\"], [\"created_at\", \"2026-10-26 11:39:23.929371\"], [\"updated_at\", \"2026-10-26 11:39:23.929371\"]]",
+    "DoubleEntry::Line Create (1.2ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"scope\", \"code\", \"amount\", \"balance\", \"partner_id\", \"partner_account\", \"metadata\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING \"id\"  [[\"account\", \"checking\"], [\"scope\", \"1\"], [\"code\", \"deposit\"], [\"amount\", 100], [\"balance\", 100], [\"partner_id\", 1], [\"partner_account\", \"bank\"], [\"metadata\", \"{\\\"country\\\":\\\"AU\\\",\\\"tax\\\":[\\\"GST\\\",\\\"VAT\\\"],\\\"n\\\":1,\\\"nested\\\":{\\\"a\\\":1}}\"], [\"created_at\", \"2026-10-26 11:39:23.933720\"], [\"updated_at\", \"2026-10-26 11:39:23.933720\"]]",
+    "DoubleEntry::Line Update (1.1ms)  UPDATE \"double_entry_lines\" SET \"partner_id\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"partner_id\", 2], [\"updated_at\", \"2026-10-26 11:39:23.936893\"], [\"id\", 1]]",
+    "TRANSACTION (2.1ms)  COMMIT"
+  ],
+  "sql_truncated": false
+}

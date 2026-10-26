@@ -1,0 +1,156 @@
+{
+  "id": "accountfixer_standalone",
+  "description": "AccountFixer#recalculate_account rewrites running balances and the cached balance",
+  "rules": [],
+  "mode": "table",
+  "json_metadata": false,
+  "input": null,
+  "result": {
+    "cash": {
+      "money": {
+        "fractional": 1500,
+        "currency": "USD",
+        "to_s": "15.00",
+        "format": "$15.00"
+      }
+    },
+    "cached": {
+      "money": {
+        "fractional": 1500,
+        "currency": "USD",
+        "to_s": "15.00",
+        "format": "$15.00"
+      }
+    }
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [
+      {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "code": "salary",
+        "amount": -1000,
+        "balance": -1000,
+        "partner_id": 2,
+        "partner_account": "cash",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:58.062263Z",
+        "updated_at": "2026-10-26T11:39:58.066954Z"
+      },
+      {
+        "id": 2,
+        "account": "cash",
+        "scope": null,
+        "code": "salary",
+        "amount": 1000,
+        "balance": 1000,
+        "partner_id": 1,
+        "partner_account": "bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:58.064924Z",
+        "updated_at": "2026-10-26T11:39:58.099708Z"
+      },
+      {
+        "id": 3,
+        "account": "bank",
+        "scope": null,
+        "code": "bonus",
+        "amount": -500,
+        "balance": -1500,
+        "partner_id": 4,
+        "partner_account": "cash",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:58.080399Z",
+        "updated_at": "2026-10-26T11:39:58.084762Z"
+      },
+      {
+        "id": 4,
+        "account": "cash",
+        "scope": null,
+        "code": "bonus",
+        "amount": 500,
+        "balance": 1500,
+        "partner_id": 3,
+        "partner_account": "bank",
+        "partner_scope": null,
+        "detail_type": null,
+        "detail_id": null,
+        "created_at": "2026-10-26T11:39:58.082726Z",
+        "updated_at": "2026-10-26T11:39:58.101692Z"
+      }
+    ],
+    "double_entry_account_balances": [
+      {
+        "id": 1,
+        "account": "bank",
+        "scope": null,
+        "balance": -1500,
+        "created_at": "2026-10-26T11:39:58.041943Z",
+        "updated_at": "2026-10-26T11:39:58.076029Z"
+      },
+      {
+        "id": 2,
+        "account": "cash",
+        "scope": null,
+        "balance": 1500,
+        "created_at": "2026-10-26T11:39:58.048811Z",
+        "updated_at": "2026-10-26T11:39:58.103682Z"
+      }
+    ],
+    "double_entry_line_metadata": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (0.7ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.9ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (0.8ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"cash\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.5ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.3ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (1.5ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"bank\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:58.041943\"], [\"updated_at\", \"2026-10-26 11:39:58.041943\"]]",
+    "TRANSACTION (1.6ms)  COMMIT",
+    "DoubleEntry::Line Pluck (0.8ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"cash\"], [\"LIMIT\", 1]]",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Create (1.3ms)  INSERT INTO \"double_entry_account_balances\" (\"account\", \"balance\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4) RETURNING \"id\"  [[\"account\", \"cash\"], [\"balance\", 0], [\"created_at\", \"2026-10-26 11:39:58.048811\"], [\"updated_at\", \"2026-10-26 11:39:58.048811\"]]",
+    "TRANSACTION (1.6ms)  COMMIT",
+    "TRANSACTION (0.3ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.3ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (0.8ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"cash\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.8ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", -1000], [\"updated_at\", \"2026-10-26 11:39:58.058120\"], [\"id\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.6ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", 1000], [\"updated_at\", \"2026-10-26 11:39:58.060150\"], [\"id\", 2]]",
+    "DoubleEntry::Line Create (1.3ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING \"id\"  [[\"account\", \"bank\"], [\"code\", \"salary\"], [\"amount\", -1000], [\"balance\", -1000], [\"partner_account\", \"cash\"], [\"created_at\", \"2026-10-26 11:39:58.062263\"], [\"updated_at\", \"2026-10-26 11:39:58.062263\"]]",
+    "DoubleEntry::Line Create (0.7ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_id\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING \"id\"  [[\"account\", \"cash\"], [\"code\", \"salary\"], [\"amount\", 1000], [\"balance\", 1000], [\"partner_id\", 1], [\"partner_account\", \"bank\"], [\"created_at\", \"2026-10-26 11:39:58.064924\"], [\"updated_at\", \"2026-10-26 11:39:58.064924\"]]",
+    "DoubleEntry::Line Update (0.8ms)  UPDATE \"double_entry_lines\" SET \"partner_id\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"partner_id\", 2], [\"updated_at\", \"2026-10-26 11:39:58.066954\"], [\"id\", 1]]",
+    "TRANSACTION (1.7ms)  COMMIT",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.3ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"bank\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (0.8ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"cash\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.8ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", -1500], [\"updated_at\", \"2026-10-26 11:39:58.076029\"], [\"id\", 1]]",
+    "DoubleEntry::AccountBalance Update (0.6ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", 1500], [\"updated_at\", \"2026-10-26 11:39:58.078100\"], [\"id\", 2]]",
+    "DoubleEntry::Line Create (0.9ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING \"id\"  [[\"account\", \"bank\"], [\"code\", \"bonus\"], [\"amount\", -500], [\"balance\", -1500], [\"partner_account\", \"cash\"], [\"created_at\", \"2026-10-26 11:39:58.080399\"], [\"updated_at\", \"2026-10-26 11:39:58.080399\"]]",
+    "DoubleEntry::Line Create (0.7ms)  INSERT INTO \"double_entry_lines\" (\"account\", \"code\", \"amount\", \"balance\", \"partner_id\", \"partner_account\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING \"id\"  [[\"account\", \"cash\"], [\"code\", \"bonus\"], [\"amount\", 500], [\"balance\", 1500], [\"partner_id\", 3], [\"partner_account\", \"bank\"], [\"created_at\", \"2026-10-26 11:39:58.082726\"], [\"updated_at\", \"2026-10-26 11:39:58.082726\"]]",
+    "DoubleEntry::Line Update (0.8ms)  UPDATE \"double_entry_lines\" SET \"partner_id\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"partner_id\", 4], [\"updated_at\", \"2026-10-26 11:39:58.084762\"], [\"id\", 3]]",
+    "TRANSACTION (1.5ms)  COMMIT",
+    "DoubleEntry::Line Update All (2.0ms)  UPDATE \"double_entry_lines\" SET \"balance\" = $1 WHERE \"double_entry_lines\".\"account\" = $2  [[\"balance\", 0], [\"account\", \"cash\"]]",
+    "DoubleEntry::AccountBalance Update All (2.4ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1 WHERE \"double_entry_account_balances\".\"account\" = $2  [[\"balance\", 0], [\"account\", \"cash\"]]",
+    "TRANSACTION (0.4ms)  BEGIN",
+    "DoubleEntry::AccountBalance Load (1.3ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2 FOR UPDATE  [[\"account\", \"cash\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::Line Load (0.8ms)  SELECT \"double_entry_lines\".* FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 AND \"double_entry_lines\".\"scope\" IS NULL ORDER BY \"double_entry_lines\".\"id\" ASC  [[\"account\", \"cash\"]]",
+    "DoubleEntry::Line Update (0.8ms)  UPDATE \"double_entry_lines\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"balance\", 1000], [\"updated_at\", \"2026-10-26 11:39:58.099708\"], [\"id\", 2]]",
+    "DoubleEntry::Line Update (0.7ms)  UPDATE \"double_entry_lines\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_lines\".\"id\" = $3  [[\"balance\", 1500], [\"updated_at\", \"2026-10-26 11:39:58.101692\"], [\"id\", 4]]",
+    "DoubleEntry::AccountBalance Update (0.7ms)  UPDATE \"double_entry_account_balances\" SET \"balance\" = $1, \"updated_at\" = $2 WHERE \"double_entry_account_balances\".\"id\" = $3  [[\"balance\", 1500], [\"updated_at\", \"2026-10-26 11:39:58.103682\"], [\"id\", 2]]",
+    "TRANSACTION (1.6ms)  COMMIT",
+    "DoubleEntry::Line Pluck (1.0ms)  SELECT \"double_entry_lines\".\"balance\" FROM \"double_entry_lines\" WHERE \"double_entry_lines\".\"account\" = $1 ORDER BY id DESC LIMIT $2  [[\"account\", \"cash\"], [\"LIMIT\", 1]]",
+    "DoubleEntry::AccountBalance Load (0.9ms)  SELECT \"double_entry_account_balances\".* FROM \"double_entry_account_balances\" WHERE \"double_entry_account_balances\".\"scope\" IS NULL AND \"double_entry_account_balances\".\"account\" = $1 ORDER BY \"double_entry_account_balances\".\"id\" ASC LIMIT $2  [[\"account\", \"cash\"], [\"LIMIT\", 1]]"
+  ],
+  "sql_truncated": false
+}

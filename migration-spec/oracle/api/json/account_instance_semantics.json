@@ -1,0 +1,45 @@
+{
+  "id": "account_instance_semantics",
+  "description": "Equality, hash, sort order, to_s of Account::Instance",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": {
+    "a1==a1b": true,
+    "a1.eql?(a1b)": true,
+    "a1.hash==a1b.hash": true,
+    "a1==a2": false,
+    "sorted": [
+      "#{Account account: bank scope:  currency: USD}",
+      "#{Account account: checking scope: #<User:0x00007d7f4844f788> currency: USD}",
+      "#{Account account: savings scope: #<User:0x00007d7f4844f788> currency: USD}",
+      "#{Account account: checking scope: #<User:0x00007d7f4844f3c8> currency: USD}"
+    ],
+    "to_s": "#{Account account: checking scope: #<User:0x00007d7f4844f788> currency: USD}",
+    "inspect": "#{Account account: bank scope:  currency: USD}",
+    "scoped?": [
+      true,
+      false
+    ],
+    "positive_only": true,
+    "negative_only": true,
+    "currency": "BTC"
+  },
+  "exception": null,
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [
+    "TRANSACTION (0.7ms)  BEGIN",
+    "User Create (2.2ms)  INSERT INTO \"users\" (\"username\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3) RETURNING \"id\"  [[\"username\", \"a\"], [\"created_at\", \"2026-10-26 11:39:21.826146\"], [\"updated_at\", \"2026-10-26 11:39:21.826146\"]]",
+    "TRANSACTION (2.0ms)  COMMIT",
+    "TRANSACTION (0.6ms)  BEGIN",
+    "User Create (1.7ms)  INSERT INTO \"users\" (\"username\", \"created_at\", \"updated_at\") VALUES ($1, $2, $3) RETURNING \"id\"  [[\"username\", \"b\"], [\"created_at\", \"2026-10-26 11:39:21.832594\"], [\"updated_at\", \"2026-10-26 11:39:21.832594\"]]",
+    "TRANSACTION (1.6ms)  COMMIT"
+  ],
+  "sql_truncated": false
+}

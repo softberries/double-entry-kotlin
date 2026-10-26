@@ -1,0 +1,6 @@
+date: 2026-10-26T11:39:13Z
+commit: f1474f0fe160edadd3b3264397b85d38d3a7751d
+ruby: ruby 4.0.5 (2026-05-20 revision 64336ffd0e) +PRISM [x86_64-linux]
+postgres: postgres (PostgreSQL) 17.11 (Debian 17.11-1.pgdg13+2)
+activerecord: 8.1.4
+money: 7.1.1

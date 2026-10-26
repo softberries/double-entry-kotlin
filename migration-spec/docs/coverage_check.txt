@@ -1,0 +1,22 @@
+{
+ "counts": {
+  "routes": 0,
+  "models": 5,
+  "jobs": 0,
+  "mailers": 0,
+  "channels": 0,
+  "pages": 0,
+  "tables": 7,
+  "env": 5,
+  "api": 180,
+  "errors": 18,
+  "notifications": 3,
+  "rake_tasks": 12,
+  "specs": 167,
+  "oracle": 121,
+  "business_rules": 72,
+  "config": 25,
+  "components": 15
+ },
+ "gaps": 0
+}

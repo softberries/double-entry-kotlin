@@ -1,0 +1,26 @@
+{
+  "id": "lock_balance_for_locked_account_outside_lock",
+  "description": "Locking.balance_for_locked_account outside a lock",
+  "rules": [],
+  "mode": "json",
+  "json_metadata": true,
+  "input": null,
+  "result": null,
+  "exception": {
+    "class": "DoubleEntry::Locking::LockNotHeld",
+    "message": "No lock held for account: bank, scope ",
+    "ancestors": [
+      "DoubleEntry::Locking::LockNotHeld",
+      "RuntimeError",
+      "StandardError"
+    ]
+  },
+  "db_after": {
+    "double_entry_lines": [],
+    "double_entry_account_balances": [],
+    "double_entry_line_checks": []
+  },
+  "notifications": [],
+  "sql": [],
+  "sql_truncated": false
+}
