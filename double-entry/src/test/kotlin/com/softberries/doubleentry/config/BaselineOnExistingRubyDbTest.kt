@@ -58,7 +58,8 @@ class BaselineOnExistingRubyDbTest {
     fun `double-entry flyway disabled leaves the schema to the host`() {
         val url = DoubleEntryPostgres.createDatabase("migrator_disabled")
 
-        boot(url, "--double-entry.flyway.enabled=false")
+        // The host owns the (here empty) schema, so it would not validate the library entities against it either.
+        boot(url, "--double-entry.flyway.enabled=false", "--spring.jpa.hibernate.ddl-auto=none")
 
         DoubleEntryPostgres.connect(url).use { connection ->
             connection.single("SELECT to_regclass('${DoubleEntrySchemaMigrator.HISTORY_TABLE}') IS NULL") shouldBe "t"
