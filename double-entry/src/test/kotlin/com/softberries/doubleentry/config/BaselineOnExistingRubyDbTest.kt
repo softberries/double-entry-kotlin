@@ -12,7 +12,8 @@ import java.sql.Connection
 
 /**
  * Coexistence with databases created by the Ruby install generator (D-003): the library baselines them at version 1
- * in its own history table and re-applies nothing. Each test boots the library context against its own database.
+ * in its own history table and re-applies nothing; `double-entry.flyway.enabled=false` turns the migrator off.
+ * Each test boots the library context against its own database.
  */
 class BaselineOnExistingRubyDbTest {
     @Test
@@ -53,13 +54,29 @@ class BaselineOnExistingRubyDbTest {
         }
     }
 
-    private fun boot(url: String) {
+    @Test
+    fun `double-entry flyway disabled leaves the schema to the host`() {
+        val url = DoubleEntryPostgres.createDatabase("migrator_disabled")
+
+        boot(url, "--double-entry.flyway.enabled=false")
+
+        DoubleEntryPostgres.connect(url).use { connection ->
+            connection.single("SELECT to_regclass('${DoubleEntrySchemaMigrator.HISTORY_TABLE}') IS NULL") shouldBe "t"
+            connection.single("SELECT to_regclass('double_entry_lines') IS NULL") shouldBe "t"
+        }
+    }
+
+    private fun boot(
+        url: String,
+        vararg extraArgs: String,
+    ) {
         SpringApplicationBuilder(TestDoubleEntryApplication::class.java)
             .web(WebApplicationType.NONE)
             .run(
                 "--spring.datasource.url=$url",
                 "--spring.datasource.username=${DoubleEntryPostgres.container.username}",
                 "--spring.datasource.password=${DoubleEntryPostgres.container.password}",
+                *extraArgs,
             ).close()
     }
 
