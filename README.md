@@ -10,8 +10,8 @@ PostgreSQL.
 The Ruby gem is a library with no routes, UI, jobs or mailers. The Kotlin port therefore ships as:
 
 - a **library jar** (`double-entry`) built on Spring Data JPA and Flyway. Host applications call its in-process API.
-- a **Spring Boot auto-configuration** for it (added in M-014; until then the library's `<Feature>Configuration`
-  classes are picked up by component scanning of `com.softberries.doubleentry`).
+- a **Spring Boot auto-configuration** for it (`DoubleEntryAutoConfiguration`). It replaces the Railtie and the install
+  generator's initializer; no component scanning of the library packages is needed.
 
 The library exposes no HTTP endpoints. The web parts of the general migration stack (Spring Web MVC, JTE, Spring Security,
 Redis) are not used (`migration-spec/docs/decisions.md` ID-1).
@@ -47,10 +47,58 @@ SAMPLE_HOST_DB_URL=jdbc:postgresql://localhost:5432/double_entry ./gradlew :samp
 curl -i localhost:8080/actuator/health   # 200 {"status":"UP"}; 503 {"status":"DOWN"} without a database
 ```
 
+## Using the library in a host application
+
+Add the dependency and declare the accounts and transfers (the Ruby `config/initializers/double_entry.rb`) as a
+`DoubleEntryConfiguration` bean. Pass the bound `DoubleEntryProperties` to keep the `double-entry.*` settings:
+
+```kotlin
+@Configuration
+class Ledger {
+    @Bean
+    fun doubleEntryConfiguration(properties: DoubleEntryProperties) =
+        doubleEntry(properties) {
+            accounts {
+                define("bank")
+                define("checking", scopeIdentifier = { (it as User).id }, positiveOnly = true)
+            }
+            transfers { define(from = "bank", to = "checking", code = "deposit") }
+        }
+}
+```
+
+Instead of the bean, one or more `DoubleEntryConfigurer` beans may contribute definitions (they are applied in `@Order`).
+With neither, startup fails with `No DoubleEntryConfiguration bean defined: declare one with doubleEntry { … }`.
+
+The auto-configuration then provides the **`DoubleEntry`** bean, the host API (`DoubleEntry.account/transfer/balance/
+lock_accounts` in Ruby). There is no static access; inject the bean:
+
+```kotlin
+@Service
+class Deposits(private val doubleEntry: DoubleEntry) {
+    fun deposit(user: User, amount: Money): TransferResult =
+        doubleEntry.transfer(amount, from = doubleEntry.account("bank"), to = doubleEntry.account("checking", user), code = "deposit")
+
+    fun balance(user: User): Money = doubleEntry.balance("checking", scope = user)
+}
+```
+
+> **Transactions (D-007).** `transfer` and `lockAccounts` open their own transaction and must be the **outermost**
+> transaction, as in Ruby. Calling them from a `@Transactional` method (or inside any active transaction) throws
+> `LockMustBeOutermostTransaction`. Do not annotate callers with `@Transactional`; put further database work of the
+> same unit inside a `doubleEntry.lockAccounts(a, b) { … }` block instead (transfers inside it reuse its locks).
+
+The auto-configuration also binds `double-entry.*` (documented in the jar's configuration metadata), runs the library
+migrations (below) and registers the library's JPA entities and Spring Data repositories by adding
+`com.softberries.doubleentry` to Boot's auto-configuration packages. A host that declares `@EntityScan` or
+`@EnableJpaRepositories` itself must include that package. A host bean replaces the library's for: `doubleEntryClock`
+(by name), `DoubleEntrySchemaMigrator`, `DoubleEntryConfiguration`, `LockingSettings` and `DoubleEntry`.
+
 ## Environment variables
 
 The library reads no environment variables, and neither does the Ruby gem's `lib/`. Configuration is Spring properties
-with the prefix `double-entry` (M-005). Database credentials belong to the host (`spring.datasource.*`).
+with the prefix `double-entry`: `account-identifier-max-length`, `scope-identifier-max-length`,
+`code-max-length`, `default-currency` (default `USD`) and `flyway.enabled` (default `true`). Database credentials belong to the host (`spring.datasource.*`).
 
 | Variable | Ruby use | Kotlin |
 |---|---|---|

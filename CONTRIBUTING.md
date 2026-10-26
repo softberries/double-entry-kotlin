@@ -28,8 +28,11 @@ com.softberries.doubleentry.{money, errors, instrumentation, config, account, le
   - one shared `postgres:17` container per JVM, migrated once by the library migrator;
   - `TRUNCATE double_entry_lines, double_entry_account_balances, double_entry_line_checks RESTART IDENTITY` before each
     test, so ids start at 1 as in the oracle;
-  - the context boots `TestDoubleEntryApplication` (`@SpringBootApplication(scanBasePackages = "com.softberries.doubleentry")`),
-    so a new feature configuration is picked up without editing any shared wiring file.
+  - the context boots `TestDoubleEntryApplication` (`@EnableAutoConfiguration`, no component scanning), i.e. the
+    library is wired exactly as in a host, by `autoconfigure.DoubleEntryAutoConfiguration`. A new feature configuration
+    must be added to that class's `@Import` list;
+  - a test declares its accounts and transfers in an `@Import`ed `@TestConfiguration` with `DoubleEntryConfigurer`
+    beans. Tests that need different definitions for the same identifier use separate test classes (separate contexts).
 - Time: the library takes `created_at`/`updated_at` from the `java.time.Clock` bean **`doubleEntryClock`**
   (`ConfigConfiguration.DOUBLE_ENTRY_CLOCK`, default `Clock.systemUTC()`). In tests it is the `MutableClock` fixture
   (inherited field `clock`): `clock.set(MutableClock.ORACLE_T0)` freezes time at `2026-01-15T10:00:00Z`,

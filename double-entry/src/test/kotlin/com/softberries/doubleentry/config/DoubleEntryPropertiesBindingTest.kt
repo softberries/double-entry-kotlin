@@ -22,9 +22,9 @@ class DoubleEntryPropertiesBindingTest {
 
     @Test
     fun `defaults are max lengths null, default currency USD`() {
-        contextRunner.run { context ->
+        contextRunner.withUserConfiguration(EmptyHostDefinitions::class.java).run { context ->
             val properties = context.getBean(DoubleEntryProperties::class.java)
-            properties shouldBe DoubleEntryProperties(null, null, null, "USD")
+            properties shouldBe DoubleEntryProperties(null, null, null, "USD", DoubleEntryProperties.Flyway(enabled = true))
 
             val config = context.getBean(DoubleEntryConfiguration::class.java)
             config.accountIdentifierMaxLength.shouldBeNull()
@@ -69,9 +69,12 @@ class DoubleEntryPropertiesBindingTest {
 
     @Test
     fun `an unknown default currency stops the context from starting`() {
-        contextRunner.withPropertyValues("double-entry.default-currency=XYZ").run { context ->
-            causes(context.startupFailure).shouldExist { it is UnknownCurrencyException }
-        }
+        contextRunner
+            .withPropertyValues("double-entry.default-currency=XYZ")
+            .withUserConfiguration(EmptyHostDefinitions::class.java)
+            .run { context ->
+                causes(context.startupFailure).shouldExist { it is UnknownCurrencyException }
+            }
     }
 
     @Test
@@ -107,6 +110,20 @@ class DoubleEntryPropertiesBindingTest {
                     define("cash")
                 }
             }
+    }
+
+    @Test
+    fun `without a configuration bean or configurer the context fails with a clear message`() {
+        contextRunner.run { context ->
+            val failure = causes(context.startupFailure).filterIsInstance<MissingDoubleEntryConfigurationException>().single()
+            failure.message shouldBe "No DoubleEntryConfiguration bean defined: declare one with doubleEntry { … }"
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    class EmptyHostDefinitions {
+        @Bean
+        fun emptyConfigurer() = DoubleEntryConfigurer { }
     }
 
     @Configuration(proxyBeanMethods = false)

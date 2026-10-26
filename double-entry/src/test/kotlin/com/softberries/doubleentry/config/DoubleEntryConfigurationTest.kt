@@ -156,7 +156,7 @@ class DoubleEntryConfigurationTest {
 
         @Test
         fun `the default currency comes from the properties`() {
-            val config = doubleEntry(DoubleEntryProperties(defaultCurrency = "eur")) { accounts { define("savings") } }
+            val config = doubleEntry(DoubleEntryProperties.DEFAULTS.copy(defaultCurrency = "eur")) { accounts { define("savings") } }
 
             config.defaultCurrency shouldBe CurrencyUnit.EUR
             config.accounts.currencyOf("savings") shouldBe CurrencyUnit.EUR
@@ -181,7 +181,7 @@ class DoubleEntryConfigurationTest {
         @Test
         fun `an unknown currency fails when the configuration is built`() {
             shouldThrow<UnknownCurrencyException> { doubleEntry { accounts { define("x", currency = "XYZ") } } }
-            shouldThrow<UnknownCurrencyException> { doubleEntry(DoubleEntryProperties(defaultCurrency = "XYZ")) }
+            shouldThrow<UnknownCurrencyException> { doubleEntry(DoubleEntryProperties.DEFAULTS.copy(defaultCurrency = "XYZ")) }
         }
     }
 

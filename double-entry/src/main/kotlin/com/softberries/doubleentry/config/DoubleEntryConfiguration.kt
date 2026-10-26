@@ -74,7 +74,7 @@ class DoubleEntryConfigurationBuilder internal constructor(
  * Definition errors (BR-002, BR-003, BR-005, BR-006) are thrown from this call.
  */
 fun doubleEntry(
-    properties: DoubleEntryProperties = DoubleEntryProperties(),
+    properties: DoubleEntryProperties = DoubleEntryProperties.DEFAULTS,
     block: DoubleEntryConfigurationBuilder.() -> Unit = {},
 ): DoubleEntryConfiguration = DoubleEntryConfigurationBuilder(properties).apply(block).build()
 
