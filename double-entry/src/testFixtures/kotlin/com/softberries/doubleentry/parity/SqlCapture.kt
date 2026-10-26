@@ -116,14 +116,9 @@ class SqlCapture {
                 }
             }
             return statements.map { statement ->
-                val match = TRAILING_BINDS.find(statement.toString())
-                if (match ==
-                    null
-                ) {
-                    RubyStatement(statement.toString(), emptyList())
-                } else {
-                    RubyStatement(match.groupValues[1], rubyBinds(match.groupValues[2]))
-                }
+                val text = statement.toString()
+                TRAILING_BINDS.find(text)?.let { RubyStatement(it.groupValues[1], rubyBinds(it.groupValues[2])) }
+                    ?: RubyStatement(text, emptyList())
             }
         }
 

@@ -15,13 +15,16 @@ import java.time.Instant
  *   and integer width do not matter.
  * - **Timestamps** (`created_at`, `updated_at`) are wall-clock in most scenarios, so exact comparison would be flaky.
  *   An expected value within [FROZEN_WINDOW] of the frozen time T0 (`2026-01-15T10:00:00Z`, `tools/oracle.rb`) was
- *   written under `Timecop.freeze` and is compared exactly. Wall-clock values are compared by pattern only:
+ *   written under `Timecop.freeze` (the oracle freezes between `T0 - 21.days` and `T0 + 1.hour`,
+ *   `tools/oracle.rb:323-439`) and is compared exactly. Wall-clock values are compared by pattern only:
  *   within a row the relation of `updated_at` to `created_at` (equal or later) must be the same, and across all
  *   wall-clock values of the snapshot the order must not be inverted (expected a < b ⇒ actual a ≤ b).
  */
 object RowComparator {
     val T0: Instant = Instant.parse("2026-01-15T10:00:00Z")
-    val FROZEN_WINDOW: Duration = Duration.ofDays(7)
+
+    /** Covers every `Timecop.freeze` of `tools/oracle.rb` (earliest `T0 - 21.days`); wall-clock values are months later. */
+    val FROZEN_WINDOW: Duration = Duration.ofDays(30)
     val TIMESTAMP_COLUMNS = setOf("created_at", "updated_at")
     val JSON_COLUMNS = setOf("metadata")
     private const val MAX_ORDER_DIFFERENCES = 10

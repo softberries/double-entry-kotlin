@@ -2,6 +2,9 @@ package com.softberries.doubleentry.parity
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.softberries.doubleentry.testing.MigrationSpec
+import io.kotest.assertions.withClue
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -9,6 +12,8 @@ import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 class RowComparatorTest {
     private fun copy(id: String): Map<String, List<ObjectNode>> =
@@ -142,5 +147,41 @@ class RowComparatorTest {
 
         RowComparator.compare(expected, actual).differences.single() shouldBe
             "double_entry_line_checks id=2 created_at: expected <2026-01-15T11:00:00.000000Z> but was <2026-01-15T11:00:00.000001Z>"
+    }
+
+    @Test
+    fun `timestamps frozen weeks before T0 are compared exactly`() {
+        val expected = OracleScenarios.load("balance_at_between").dbAfter
+        val actual = copy("balance_at_between")
+        val line1 = actual.row("double_entry_lines", 1)
+        line1["created_at"].asText() shouldBe "2025-12-25T10:00:00.000000Z"
+        line1.put("created_at", "2025-12-26T10:00:00.000000Z").put("updated_at", "2025-12-26T10:00:00.000000Z")
+
+        RowComparator.compare(expected, actual).differences shouldContain
+            "double_entry_lines id=1 created_at: expected <2025-12-25T10:00:00.000000Z> but was <2025-12-26T10:00:00.000000Z>"
+    }
+
+    @Test
+    fun `every oracle timestamp is either frozen near T0 or wall-clock on the capture date`() {
+        val captureDate =
+            LocalDate.parse(
+                Regex("^date: (\\d{4}-\\d{2}-\\d{2})", RegexOption.MULTILINE)
+                    .find(MigrationSpec.read("oracle/environment.txt"))!!
+                    .groupValues[1],
+            )
+        val unclassified =
+            OracleScenarios.all().flatMap { scenario ->
+                scenario.dbAfter.values.flatten().flatMap { row ->
+                    RowComparator.TIMESTAMP_COLUMNS
+                        .mapNotNull { row[it]?.takeUnless { node -> node.isNull }?.asText() }
+                        .filterNot { text ->
+                            val instant = Instant.parse(text)
+                            Duration.between(RowComparator.T0, instant).abs() <= RowComparator.FROZEN_WINDOW ||
+                                instant.atZone(ZoneOffset.UTC).toLocalDate() == captureDate
+                        }.map { "${scenario.id}: $it" }
+                }
+            }
+
+        withClue("timestamps neither frozen nor wall-clock") { unclassified.shouldBeEmpty() }
     }
 }
