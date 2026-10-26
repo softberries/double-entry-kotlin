@@ -1,8 +1,12 @@
 package com.softberries.doubleentry.config
 
+import com.softberries.doubleentry.account.AccountResolver
 import com.softberries.doubleentry.errors.AccountIdentifierTooLongError
+import com.softberries.doubleentry.errors.ScopeIdentifierTooLongError
+import com.softberries.doubleentry.errors.UnknownAccount
 import com.softberries.doubleentry.money.CurrencyUnit
 import com.softberries.doubleentry.money.UnknownCurrencyException
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldExist
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
@@ -70,6 +74,22 @@ class DoubleEntryPropertiesBindingTest {
         }
     }
 
+    @Test
+    fun `the account resolver bean uses the configured accounts and scope identifier max length`() {
+        contextRunner
+            .withPropertyValues("double-entry.scope-identifier-max-length=2")
+            .withUserConfiguration(HostDefinitions::class.java, ScopedHostDefinitions::class.java)
+            .run { context ->
+                val resolver = context.getBean(AccountResolver::class.java)
+
+                resolver.account("bank").identifier shouldBe "bank"
+                resolver.account("wallet", scope = 42).scopeIdentity shouldBe "42"
+                shouldThrow<ScopeIdentifierTooLongError> { resolver.account("wallet", scope = 123) }.message shouldBe
+                    "scope identifier '123' is too long. Please limit it to 2 characters."
+                shouldThrow<UnknownAccount> { resolver.account("wallet") }.message shouldBe "account: wallet scoped?: false"
+            }
+    }
+
     private fun causes(failure: Throwable?): List<Throwable> = generateSequence(failure) { it.cause }.toList()
 
     @Configuration(proxyBeanMethods = false)
@@ -87,5 +107,12 @@ class DoubleEntryPropertiesBindingTest {
                     define("cash")
                 }
             }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    class ScopedHostDefinitions {
+        @Bean
+        @Order(3)
+        fun scopedAccountsConfigurer() = DoubleEntryConfigurer { it.accounts { define("wallet", scopeIdentifier = { scope -> scope }) } }
     }
 }
