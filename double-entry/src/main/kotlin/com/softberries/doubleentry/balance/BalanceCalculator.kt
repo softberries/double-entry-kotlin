@@ -33,10 +33,12 @@ class BalanceCalculator(
             conditions += "l.createdAt <= :at"
             parameters["at"] = it.toColumn()
         }
-        if (options.isBetween) {
+        val from = options.from
+        val to = options.to
+        if (options.isBetween && from != null && to != null) {
             conditions += "l.createdAt between :from and :to"
-            parameters["from"] = options.from!!.toColumn()
-            parameters["to"] = options.to!!.toColumn()
+            parameters["from"] = from.toColumn()
+            parameters["to"] = to.toColumn()
         }
         val codes = options.effectiveCodes
         when (codes.size) {
@@ -62,7 +64,7 @@ class BalanceCalculator(
             if (options.isSum) {
                 val query = entityManager.createQuery("select sum(l.amount) from LineEntity l where $where", Long::class.javaObjectType)
                 parameters.forEach { (name, value) -> query.setParameter(name, value) }
-                query.singleResult?.toLong() ?: 0L
+                query.singleResult ?: 0L
             } else {
                 val query =
                     entityManager.createQuery(
@@ -71,7 +73,7 @@ class BalanceCalculator(
                     )
                 parameters.forEach { (name, value) -> query.setParameter(name, value) }
                 query.maxResults = 1
-                query.resultList.firstOrNull()?.toLong() ?: 0L
+                query.resultList.firstOrNull() ?: 0L
             }
         return Money.ofMinor(minorUnits, account.currency)
     }
