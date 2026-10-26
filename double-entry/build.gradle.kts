@@ -159,6 +159,10 @@ val publicationTestPackage = "com.softberries.doubleentry.publication.*"
 
 tasks.named<Test>("test") {
     filter { excludeTestsMatching(publicationTestPackage) }
+    // Concurrency suite (M-015): `-Pjackhammer.full` runs the Ruby scale (20 workers, 20000 transfers),
+    // `-Pjackhammer.seed=<n>` replays a logged seed.
+    providers.gradleProperty("jackhammer.full").orNull?.let { systemProperty("jackhammer.full", it.ifBlank { "true" }) }
+    providers.gradleProperty("jackhammer.seed").orNull?.let { systemProperty("jackhammer.seed", it) }
 }
 
 val publicationTest =
