@@ -46,8 +46,13 @@ class FlywayBaselineSchemaTest : PostgresIntegrationTest() {
     }
 
     @Test
-    fun `indexes match the Ruby generator schema`() {
-        migrated { indexes(it) } shouldContainExactly reference { indexes(it) }
+    fun `indexes match the Ruby generator schema except the V2 NULLS NOT DISTINCT index`() {
+        val v2Index = "index_account_balances_on_scope_and_account"
+        migrated { indexes(it) }.filterNot { it.name == v2Index } shouldContainExactly
+            reference { indexes(it) }.filterNot { it.name == v2Index }
+        // X-03 (D-005): V2 recreates the generator's index with NULLS NOT DISTINCT; same name and columns.
+        migrated { indexes(it) }.single { it.name == v2Index }.definition shouldBe
+            reference { indexes(it) }.single { it.name == v2Index }.definition + " NULLS NOT DISTINCT"
     }
 
     @Test
@@ -109,9 +114,10 @@ class FlywayBaselineSchemaTest : PostgresIntegrationTest() {
                 "index_account_balances_on_scope_and_account",
                 "line_checks_created_at_last_line_id_idx",
             )
-        // UNIQUE without NULLS NOT DISTINCT until V2 (M-008, X-03).
+        // V2 (M-008, X-03): UNIQUE NULLS NOT DISTINCT.
         indexes["index_account_balances_on_scope_and_account"] shouldBe
-            "CREATE UNIQUE INDEX index_account_balances_on_scope_and_account ON double_entry_account_balances USING btree (scope, account)"
+            "CREATE UNIQUE INDEX index_account_balances_on_scope_and_account ON double_entry_account_balances " +
+            "USING btree (scope, account) NULLS NOT DISTINCT"
         indexes["lines_scope_account_id_idx"] shouldBe
             "CREATE INDEX lines_scope_account_id_idx ON double_entry_lines USING btree (scope, account, id)"
     }
@@ -137,11 +143,11 @@ class FlywayBaselineSchemaTest : PostgresIntegrationTest() {
     }
 
     @Test
-    fun `records V1 in the library history table`() {
+    fun `records V1 and V2 in the library history table`() {
         jdbcTemplate.queryForList(
             "SELECT version || ':' || type || ':' || success FROM ${DoubleEntrySchemaMigrator.HISTORY_TABLE} ORDER BY installed_rank",
             String::class.java,
-        ) shouldContainExactly listOf("1:SQL:true")
+        ) shouldContainExactly listOf("1:SQL:true", "2:SQL:true")
     }
 
     @Test

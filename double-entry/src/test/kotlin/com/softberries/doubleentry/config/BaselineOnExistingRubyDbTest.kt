@@ -12,12 +12,12 @@ import java.sql.Connection
 
 /**
  * Coexistence with databases created by the Ruby install generator (D-003): the library baselines them at version 1
- * in its own history table and re-applies nothing; `double-entry.flyway.enabled=false` turns the migrator off.
+ * in its own history table, re-applies nothing before V2 and then applies V2 (X-03); `double-entry.flyway.enabled=false` turns the migrator off.
  * Each test boots the library context against its own database.
  */
 class BaselineOnExistingRubyDbTest {
     @Test
-    fun `a Ruby-created database is baselined at version 1 and V1 is not re-applied`() {
+    fun `a Ruby-created database is baselined at version 1, V1 is not re-applied and V2 runs`() {
         val url = DoubleEntryPostgres.createDatabase("ruby_created")
         MigrationSpec.applyRubyGeneratedSchema(url)
         DoubleEntryPostgres.connect(url).use { it.update(INSERT_RUBY_LINE) }
@@ -25,8 +25,22 @@ class BaselineOnExistingRubyDbTest {
         boot(url)
 
         DoubleEntryPostgres.connect(url).use { connection ->
-            connection.history() shouldContainExactly listOf("1:BASELINE:true")
+            connection.history() shouldContainExactly listOf("1:BASELINE:true", "2:SQL:true")
             connection.single("SELECT count(*) FROM double_entry_lines") shouldBe "1"
+        }
+    }
+
+    @Test
+    fun `V2 removes the NULL-scope duplicates a Ruby database holds (BR-070)`() {
+        val url = DoubleEntryPostgres.createDatabase("ruby_created_duplicates")
+        MigrationSpec.applyRubyGeneratedSchema(url)
+        DoubleEntryPostgres.connect(url).use { it.update(INSERT_RUBY_DUPLICATE_BALANCES) }
+
+        boot(url)
+
+        DoubleEntryPostgres.connect(url).use { connection ->
+            connection.single("SELECT string_agg(id || ':' || balance, ',' ORDER BY id) FROM double_entry_account_balances") shouldBe
+                "1:-300,3:0"
         }
     }
 
@@ -38,7 +52,7 @@ class BaselineOnExistingRubyDbTest {
         boot(url)
         boot(url)
 
-        DoubleEntryPostgres.connect(url).use { it.history() shouldContainExactly listOf("1:BASELINE:true") }
+        DoubleEntryPostgres.connect(url).use { it.history() shouldContainExactly listOf("1:BASELINE:true", "2:SQL:true") }
     }
 
     @Test
@@ -49,7 +63,7 @@ class BaselineOnExistingRubyDbTest {
         boot(url)
 
         DoubleEntryPostgres.connect(url).use { connection ->
-            connection.history() shouldContainExactly listOf("0:BASELINE:true", "1:SQL:true")
+            connection.history() shouldContainExactly listOf("0:BASELINE:true", "1:SQL:true", "2:SQL:true")
             connection.single("SELECT to_regclass('double_entry_lines') IS NOT NULL") shouldBe "t"
         }
     }
@@ -102,6 +116,12 @@ class BaselineOnExistingRubyDbTest {
     }
 
     private companion object {
+        const val INSERT_RUBY_DUPLICATE_BALANCES =
+            """
+            INSERT INTO double_entry_account_balances (account, scope, balance, created_at, updated_at)
+            VALUES ('cash', NULL, -300, now(), now()), ('cash', NULL, 0, now(), now()), ('checking', '1', 0, now(), now())
+            """
+
         const val INSERT_RUBY_LINE =
             """
             INSERT INTO double_entry_lines (account, code, amount, balance, partner_account, created_at, updated_at)

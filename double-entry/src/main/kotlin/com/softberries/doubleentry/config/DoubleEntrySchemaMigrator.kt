@@ -17,6 +17,9 @@ import javax.sql.DataSource
  *
  * The explicit check replaces a bare `baselineOnMigrate=true`, which would also baseline a schema that holds only
  * host tables and so skip V1.
+ *
+ * Before migrating it fails fast on PostgreSQL below [MIN_POSTGRES_MAJOR_VERSION]: V2 creates a
+ * `UNIQUE NULLS NOT DISTINCT` index (D-002, D-005, X-03).
  */
 class DoubleEntrySchemaMigrator(
     private val dataSource: DataSource,
@@ -26,6 +29,7 @@ class DoubleEntrySchemaMigrator(
     }
 
     fun migrate(): MigrateResult {
+        checkPostgresVersion()
         val rubyCreated = !tableExists(HISTORY_TABLE) && tableExists(DoubleEntryTables.LINES)
         if (rubyCreated) {
             log.info("double_entry tables found without {}; baselining at version {}", HISTORY_TABLE, BASELINE_VERSION)
@@ -44,6 +48,18 @@ class DoubleEntrySchemaMigrator(
             .baselineDescription("double_entry baseline")
             .load()
 
+    private fun checkPostgresVersion() {
+        val (product, major, version) =
+            dataSource.connection.use { connection ->
+                val metaData = connection.metaData
+                Triple(metaData.databaseProductName, metaData.databaseMajorVersion, metaData.databaseProductVersion)
+            }
+        check(product == POSTGRES_PRODUCT_NAME && major >= MIN_POSTGRES_MAJOR_VERSION) {
+            "double_entry requires PostgreSQL $MIN_POSTGRES_MAJOR_VERSION or later (UNIQUE NULLS NOT DISTINCT); " +
+                "connected to $product $version"
+        }
+    }
+
     private fun tableExists(name: String): Boolean =
         dataSource.connection.use { connection ->
             connection.prepareStatement("SELECT to_regclass(?) IS NOT NULL").use { statement ->
@@ -57,6 +73,8 @@ class DoubleEntrySchemaMigrator(
         const val LOCATION = "classpath:db/double_entry/migration"
         const val HISTORY_TABLE = "double_entry_schema_history"
         const val BASELINE_VERSION = "1"
+        const val MIN_POSTGRES_MAJOR_VERSION = 15
+        private const val POSTGRES_PRODUCT_NAME = "PostgreSQL"
 
         // Below V1: a baseline marker on a host-populated schema still lets V1 run.
         private const val EMPTY_BASELINE_VERSION = "0"
