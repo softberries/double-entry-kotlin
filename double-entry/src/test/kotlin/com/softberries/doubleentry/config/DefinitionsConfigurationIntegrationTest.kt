@@ -23,7 +23,7 @@ class DefinitionsConfigurationIntegrationTest : PostgresIntegrationTest() {
 
     @Test
     fun `the configuration bean is present with default settings`() {
-        properties shouldBe DoubleEntryProperties()
+        properties shouldBe DoubleEntryProperties.DEFAULTS
         config.defaultCurrency shouldBe CurrencyUnit.USD
         config.accountIdentifierMaxLength.shouldBeNull()
         config.scopeIdentifierMaxLength.shouldBeNull()
