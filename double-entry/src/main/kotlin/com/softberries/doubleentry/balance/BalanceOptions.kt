@@ -23,9 +23,6 @@ data class BalanceOptions(
     /** `codes.to_a << code` without nulls (BR-045). */
     val effectiveCodes: List<String> get() = codes.orEmpty() + listOfNotNull(code)
 
-    /** `at?`. */
-    val hasAt: Boolean get() = at != null
-
     /** `between?`: both ends present and no [at] (BR-043, BR-044). */
     val isBetween: Boolean get() = from != null && to != null && at == null
 
