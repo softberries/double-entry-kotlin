@@ -8,6 +8,12 @@ Work is planned as backlog units (`M-###`, see `migration-spec/` and the GitHub 
 `settings.gradle.kts`, the `build.gradle.kts` files and `gradle/libs.versions.toml` are complete after M-001. Only M-017
 (publication) edits them. If a unit needs a new dependency, change the backlog first.
 
+## Releases
+
+Coordinates are `group`/`version` in `gradle.properties` (`com.softberries:double-entry`, `3.x.y-SNAPSHOT` between
+releases). To release, push a tag `vX.Y.Z` on `main`; `.github/workflows/release.yml` builds, tests and publishes to
+GitHub Packages. `PublicationTest` (task `publicationTest`, part of `check`) checks the POM and jar contents on every build.
+
 ## Packages
 
 Package by feature (DDD aggregate), never by layer:
