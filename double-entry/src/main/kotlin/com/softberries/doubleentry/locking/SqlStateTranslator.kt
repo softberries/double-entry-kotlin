@@ -42,8 +42,6 @@ internal object SqlStateTranslator {
 
     fun isDeadlock(error: Throwable): Boolean = sqlStateOf(error) == DEADLOCK_DETECTED
 
-    fun isUniqueViolation(error: Throwable): Boolean = sqlStateOf(error) == UNIQUE_VIOLATION
-
     fun isLockWaitTimeout(error: Throwable): Boolean = sqlStateOf(error) == LOCK_NOT_AVAILABLE
 
     /**
