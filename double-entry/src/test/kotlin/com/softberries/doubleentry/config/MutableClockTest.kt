@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
+import java.time.ZoneId
 import java.time.ZoneOffset
 
 class MutableClockTest : PostgresIntegrationTest() {
@@ -40,5 +41,19 @@ class MutableClockTest : PostgresIntegrationTest() {
 
         clock.reset()
         Duration.between(doubleEntryClock.instant(), Instant.now()).abs().toSeconds() shouldBeLessThan 5
+    }
+
+    @Test
+    fun `withZone returns a view that follows later changes of the clock`() {
+        clock.set(MutableClock.ORACLE_T0)
+        val warsaw = doubleEntryClock.withZone(ZoneId.of("Europe/Warsaw"))
+        warsaw.zone shouldBe ZoneId.of("Europe/Warsaw")
+        warsaw.instant() shouldBe MutableClock.ORACLE_T0
+
+        clock.advance(Duration.ofHours(1))
+        warsaw.instant() shouldBe Instant.parse("2026-01-15T11:00:00Z")
+
+        clock.reset()
+        Duration.between(warsaw.instant(), Instant.now()).abs().toSeconds() shouldBeLessThan 5
     }
 }

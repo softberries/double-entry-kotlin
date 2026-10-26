@@ -32,7 +32,18 @@ class MutableClock : Clock() {
 
     override fun getZone(): ZoneId = ZoneOffset.UTC
 
-    override fun withZone(zone: ZoneId): Clock = if (zone == ZoneOffset.UTC) this else fixed(instant(), zone)
+    /** A view in [zone] that keeps following this clock (later [set]/[advance]/[reset] calls apply to it too). */
+    override fun withZone(zone: ZoneId): Clock = if (zone == ZoneOffset.UTC) this else ZonedView(zone)
+
+    private inner class ZonedView(
+        private val zone: ZoneId,
+    ) : Clock() {
+        override fun instant(): Instant = this@MutableClock.instant()
+
+        override fun getZone(): ZoneId = zone
+
+        override fun withZone(zone: ZoneId): Clock = this@MutableClock.withZone(zone)
+    }
 
     companion object {
         /** T0 of every frozen-time oracle scenario (`oracle/README.md`). */
