@@ -1,5 +1,6 @@
 package com.softberries.doubleentry.config
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryDependsOnPostProcessor
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer
@@ -9,13 +10,15 @@ import java.time.Clock
 import javax.sql.DataSource
 
 /**
- * Infrastructure shared by every feature: the library clock, the schema migrator and Hibernate settings.
- * M-014 moves the wiring into the real `@AutoConfiguration`.
+ * Infrastructure shared by every feature: the library clock, the schema migrator and Hibernate settings. Imported by
+ * `DoubleEntryAutoConfiguration`; a host bean named [DOUBLE_ENTRY_CLOCK] or of type [DoubleEntrySchemaMigrator]
+ * replaces the library's.
  */
 @Configuration(proxyBeanMethods = false)
 class ConfigConfiguration {
     /** Source of `created_at`/`updated_at` (replaces Timecop in the Ruby specs, U-008). */
     @Bean(DOUBLE_ENTRY_CLOCK)
+    @ConditionalOnMissingBean(name = [DOUBLE_ENTRY_CLOCK])
     fun doubleEntryClock(): Clock = Clock.systemUTC()
 
     /** The library writes timestamps in UTC (BR-035, U-014). */
@@ -27,6 +30,7 @@ class ConfigConfiguration {
     @ConditionalOnProperty(prefix = "double-entry.flyway", name = ["enabled"], matchIfMissing = true)
     class SchemaMigration {
         @Bean(DoubleEntrySchemaMigrator.BEAN_NAME)
+        @ConditionalOnMissingBean
         fun doubleEntrySchemaMigrator(dataSource: DataSource): DoubleEntrySchemaMigrator = DoubleEntrySchemaMigrator(dataSource)
 
         companion object {
@@ -34,7 +38,7 @@ class ConfigConfiguration {
             @Bean
             @JvmStatic
             fun doubleEntryEntityManagerFactoryDependsOnMigrator(): EntityManagerFactoryDependsOnPostProcessor =
-                EntityManagerFactoryDependsOnPostProcessor(DoubleEntrySchemaMigrator.BEAN_NAME)
+                EntityManagerFactoryDependsOnPostProcessor(DoubleEntrySchemaMigrator::class.java)
         }
     }
 
