@@ -12,6 +12,8 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.Meter
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import org.junit.jupiter.api.AfterEach
@@ -111,6 +113,30 @@ class InstrumentationTest {
                 listOf("duplicate_ignore.double_entry")
             assertLogLines(DoubleEntryEventType.DUPLICATE_IGNORE, exception)
         }
+    }
+
+    @Test
+    fun `a failing MeterRegistry does not break the publisher, other listeners or the log lines`() {
+        val exception = RuntimeException("duplicate key value violates unique constraint")
+        val failingRegistry =
+            object : SimpleMeterRegistry() {
+                override fun newCounter(id: Meter.Id): Counter = throw IllegalArgumentException("meter conflict")
+            }
+
+        contextRunner.withBean(MeterRegistry::class.java, { failingRegistry }).run { context ->
+            context.getBean(DoubleEntryEventPublisher::class.java).publish(DoubleEntryEventType.DUPLICATE_IGNORE, exception)
+
+            context.getBean(RecordingListener::class.java).events.map { it.name } shouldContainExactly
+                listOf("duplicate_ignore.double_entry")
+        }
+
+        val byLevel = appender.list.groupBy { it.level }
+        byLevel.getValue(Level.INFO).map { it.formattedMessage } shouldContainExactly listOf("Duplicate ignored")
+        byLevel.getValue(Level.DEBUG) shouldHaveSize 1
+        val warn = byLevel.getValue(Level.WARN).single()
+        warn.loggerName shouldBe "double_entry"
+        warn.formattedMessage shouldBe "Could not count duplicate_ignore.double_entry event in double_entry.duplicate_ignore"
+        warn.throwableProxy.message shouldBe "meter conflict"
     }
 
     @Test
