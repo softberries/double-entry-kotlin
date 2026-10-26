@@ -152,18 +152,37 @@ tasks.named("publishMavenPublicationToBuildRepository") {
     doFirst { delete(publicationRepo) }
 }
 
+// The publication tests read the freshly published repository and files outside this module. They run in their own task:
+// publishing is never up-to-date (timestamped snapshots, maven-metadata.xml), so as inputs of `test` it would rerun the
+// whole Testcontainers suite on every build and defeat the build cache.
+val publicationTestPackage = "com.softberries.doubleentry.publication.*"
+
 tasks.named<Test>("test") {
-    dependsOn("publishMavenPublicationToBuildRepository")
-    inputs.dir(publicationRepo).withPropertyName("publicationRepo").withPathSensitivity(PathSensitivity.RELATIVE)
-    systemProperty("doubleentry.publicationRepo", publicationRepo.get().asFile.absolutePath)
-    systemProperty("doubleentry.publication.group", project.group.toString())
-    systemProperty("doubleentry.publication.version", project.version.toString())
-    // ReleaseWorkflowTest and HostGuideTest read files outside this module.
-    systemProperty("doubleentry.repoRoot", rootProject.projectDir.absolutePath)
-    inputs
-        .file(
-            rootProject.file(".github/workflows/release.yml"),
-        ).withPropertyName("releaseWorkflow")
-        .withPathSensitivity(PathSensitivity.RELATIVE)
-    inputs.file(rootProject.file("docs/host-guide.md")).withPropertyName("hostGuide").withPathSensitivity(PathSensitivity.RELATIVE)
+    filter { excludeTestsMatching(publicationTestPackage) }
 }
+
+val publicationTest =
+    tasks.register<Test>("publicationTest") {
+        description = "Checks the Maven publication, the release workflow and docs/host-guide.md (M-017)."
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = sourceSets.test.get().runtimeClasspath
+        filter { includeTestsMatching(publicationTestPackage) }
+        dependsOn("publishMavenPublicationToBuildRepository")
+        inputs.dir(publicationRepo).withPropertyName("publicationRepo").withPathSensitivity(PathSensitivity.RELATIVE)
+        systemProperty("doubleentry.publicationRepo", publicationRepo.get().asFile.absolutePath)
+        systemProperty("doubleentry.publication.group", project.group.toString())
+        systemProperty("doubleentry.publication.version", project.version.toString())
+        systemProperty("doubleentry.repoRoot", rootProject.projectDir.absolutePath)
+        inputs
+            .file(
+                rootProject.file(".github/workflows/release.yml"),
+            ).withPropertyName("releaseWorkflow")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+        inputs.file(rootProject.file("docs/host-guide.md")).withPropertyName("hostGuide").withPathSensitivity(PathSensitivity.RELATIVE)
+    }
+
+tasks.named("check") { dependsOn(publicationTest) }

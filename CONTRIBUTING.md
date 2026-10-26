@@ -12,7 +12,7 @@ Work is planned as backlog units (`M-###`, see `migration-spec/` and the GitHub 
 
 Coordinates are `group`/`version` in `gradle.properties` (`com.softberries:double-entry`, `3.x.y-SNAPSHOT` between
 releases). To release, push a tag `vX.Y.Z` on `main`; `.github/workflows/release.yml` builds, tests and publishes to
-GitHub Packages. `PublicationTest` checks the POM and jar contents on every build.
+GitHub Packages. `PublicationTest` (task `publicationTest`, part of `check`) checks the POM and jar contents on every build.
 
 ## Packages
 

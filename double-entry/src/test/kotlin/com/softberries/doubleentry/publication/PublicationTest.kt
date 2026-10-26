@@ -15,7 +15,7 @@ import java.util.jar.JarFile
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
- * M-017: the Maven publication that replaces the gem package (`double_entry.gemspec`). The `test` task first runs
+ * M-017: the Maven publication that replaces the gem package (`double_entry.gemspec`). The `publicationTest` task first runs
  * `publishMavenPublicationToBuildRepository`, i.e. the same publication as `publishToMavenLocal` and the release
  * workflow, into `build/publication-repo`; this test reads the POM and jars from there.
  */
