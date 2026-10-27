@@ -1,0 +1,34 @@
+{
+  "lock_creates_missing_balances": {
+    "xRef": "X-05",
+    "kotlinExpectation": "D-010: lockAccounts returns the block value \"ok\" at the outermost level (Ruby: nil); same rows and SQL"
+  },
+  "lock_returns_block_value": {
+    "xRef": "X-05",
+    "kotlinExpectation": "D-010: both calls return the block value \"block_value\", whether the balance row had to be created or existed (Ruby: nil, nil); same rows and SQL"
+  },
+  "lock_nested_subset_ok": {
+    "xRef": "X-05",
+    "kotlinExpectation": "D-010: the outer lockAccounts returns its block's value, the nested block's \"inner\" (Ruby: nil); same rows and SQL"
+  },
+  "lock_order_sql": {
+    "xRef": "X-05",
+    "kotlinExpectation": "D-010: the second lockAccounts returns the block value \"ok\" (Ruby: nil); same FOR UPDATE order (bank, cash, store, checking/1), rows and SQL"
+  },
+  "lock_empty": {
+    "xRef": "X-05",
+    "kotlinExpectation": "D-010: lockAccounts with no accounts returns the block value \"empty\" (Ruby: nil); no rows, no SQL"
+  },
+  "lock_wait_timeout_pg": {
+    "xRef": "X-04",
+    "kotlinExpectation": "D-008: the PG lock timeout (SQLSTATE 55P03) becomes the library's LockWaitTimeout 'DoubleEntry::Locking::LockWaitTimeout' (Ruby: ActiveRecord::LockWaitTimeout); same rows and SQL"
+  },
+  "lock_null_scope_duplicate_balance_rows": {
+    "xRef": "X-03",
+    "kotlinExpectation": "D-005 UNIQUE NULLS NOT DISTINCT: the second NULL-scope cash insert is rejected with SQLSTATE 23505 (its transaction rolls back), so 1 row remains (Ruby: 2)"
+  },
+  "lock_concurrent_threads_same_accounts": {
+    "xRef": "X-03",
+    "kotlinExpectation": "D-005 UNIQUE NULLS NOT DISTINCT: exactly 2 balance rows (bank -200.00, cash 200.00) instead of 16; same 400 lines, balances ±200.00 and consistent running balances; losers of the creation race publish duplicate_ignore.double_entry (Ruby: none)"
+  }
+}
