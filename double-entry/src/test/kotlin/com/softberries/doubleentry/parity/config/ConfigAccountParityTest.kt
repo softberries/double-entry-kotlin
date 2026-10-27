@@ -56,9 +56,6 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
     private lateinit var configuration: DoubleEntryConfiguration
 
     @Autowired
-    private lateinit var lockingSettings: LockingSettings
-
-    @Autowired
     private lateinit var sqlCapture: SqlCapture
 
     @Autowired
@@ -273,7 +270,8 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
                             "code_max_length" to defaults.codeMaxLength,
                             "scope_identifier_max_length" to defaults.scopeIdentifierMaxLength,
                             "account_identifier_max_length" to defaults.accountIdentifierMaxLength,
-                            "running_inside_transactional_fixtures" to lockingSettings.runningInsideTransactionalFixtures,
+                            // The default, like `Locking::Configuration.new` in the oracle, not the context's bean.
+                            "running_inside_transactional_fixtures" to LockingSettings().runningInsideTransactionalFixtures,
                             "table_name_prefix" to DoubleEntryTables.PREFIX,
                             "tables" to DoubleEntryTables.ALL,
                             "default_currency_of_account_without_currency" to acct("bank").currency,
