@@ -258,7 +258,6 @@ class LockingParityTest : ConcurrencyIntegrationTest() {
                 LockingExpectation(
                     result = expectation.result ?: oracleExpectation.result.takeIf { expectation.exception == null },
                     exception = expectation.exception,
-                    check = expectation.check,
                     dbAfter = expectation.dbAfter ?: oracleExpectation.dbAfter,
                     sql = expectation.sql?.let(SqlCapture::withoutReadOnlyTransactions) ?: oracleExpectation.sql,
                     finalState = expectation.finalState ?: oracleExpectation.finalState,
@@ -284,13 +283,13 @@ class LockingParityTest : ConcurrencyIntegrationTest() {
         expected: LockingExpectation,
         actual: Actual,
     ): Comparison {
-        val outcome = expected.check?.invoke(actual.outcome) ?: compareOutcome(expected.result, expected.exception, actual.outcome)
+        val outcome = compareOutcome(expected.result, expected.exception, actual.outcome)
         return when (compared) {
             Compared.EXACT ->
                 outcome +
                     Comparison.of("sql: expected ${expected.sql} but was ${actual.sql}".takeUnless { expected.sql == actual.sql }) +
                     RowComparator.compare(checkNotNull(expected.dbAfter), actual.db) +
-                    NotificationSets.exact(oracle.notifications, actual.notifications)
+                    NotificationCapture.compare(oracle.notifications, actual.notifications)
             Compared.FINAL_STATE -> {
                 // The oracle logged only the first 400 statements of the threads: there is no protocol to compare.
                 check(oracle.sqlTruncated) { "${oracle.id}: compared on final state although its SQL log is complete" }
@@ -458,16 +457,8 @@ class LockingParityTest : ConcurrencyIntegrationTest() {
 
         val run = jackHammer(balanceFlushCount = oracle.flushes, reporter = reporter, workers = oracle.workers, total = oracle.transfers)
 
-        val kotlin =
-            JackHammerOutcome(
-                workers = oracle.workers,
-                workerMode = oracle.workerMode,
-                flushes = oracle.flushes,
-                transfers = run.transfers,
-                reconciliation = reconcile(run.transfers),
-                exitCode = 0,
-            )
-        kotlin shouldBe oracle
+        run.transfers shouldBe oracle.transfers
+        reconcile(run.transfers) shouldContainExactly oracle.reconciliation
         oracle.reconciliation shouldContainExactly
             listOf(JackHammerOutcome.LINES_WRITTEN, JackHammerOutcome.ALL_RECONCILED, JackHammerOutcome.DONE)
         // The stricter M-015 checks on top: BR-026 on every line, Σ amount = 0, one balance row per account (X-03).

@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.softberries.doubleentry.config.DoubleEntryTables
 import com.softberries.doubleentry.parity.Comparison
-import com.softberries.doubleentry.parity.NotificationCapture
 import com.softberries.doubleentry.parity.ObservedNotification
 import com.softberries.doubleentry.parity.OracleException
 import com.softberries.doubleentry.parity.OracleNotification
 import com.softberries.doubleentry.parity.SqlProtocolStep
-import com.softberries.doubleentry.parity.config.KotlinOutcome
 import com.softberries.doubleentry.testing.MigrationSpec
 import kotlin.io.path.readLines
 
@@ -27,14 +25,10 @@ enum class Compared {
     FINAL_STATE,
 }
 
-/**
- * The Kotlin expectation of a deviation (from `docs/decisions.md`). Unset fields default to the oracle's value;
- * [check] replaces the result/exception comparison where the outcome is not an oracle-shaped value.
- */
+/** The Kotlin expectation of a deviation (from `docs/decisions.md`). Unset fields default to the oracle's value. */
 data class LockingExpectation(
     val result: JsonNode? = null,
     val exception: OracleException? = null,
-    val check: ((KotlinOutcome) -> Comparison)? = null,
     val dbAfter: Map<String, List<ObjectNode>>? = null,
     val sql: List<SqlProtocolStep>? = null,
     val finalState: FinalState? = null,
@@ -98,11 +92,6 @@ object NotificationSets {
         val unexpected = actual.map(ObservedNotificationKey::of).toSet() - allowed
         return Comparison.of("notifications not in $allowed: $unexpected".takeUnless { unexpected.isEmpty() })
     }
-
-    fun exact(
-        expected: List<OracleNotification>,
-        actual: List<ObservedNotification>,
-    ): Comparison = NotificationCapture.compare(expected, actual)
 }
 
 /**
@@ -129,11 +118,10 @@ object PgError {
 
 /**
  * The parts of a `script/jack_hammer` run (`oracle/concurrency/jack_hammer_*.txt`) that both runtimes can produce:
- * its shape (workers, mode, flushes, transfers) and the reconciliation output after `Reconciling...`.
+ * its shape (workers, flushes, transfers) and the reconciliation output after `Reconciling...`.
  */
 data class JackHammerOutcome(
     val workers: Int,
-    val workerMode: String,
     val flushes: Int,
     val transfers: Int,
     val reconciliation: List<String>,
@@ -146,7 +134,6 @@ data class JackHammerOutcome(
         const val DONE = "Done successfully :)"
 
         private val SPAWNING = Regex("^Spawning (\\d+) processes\\.\\.\\.$")
-        private val MODE = Regex("^Using (\\w+) as workers$")
         private val RUNNING = Regex("^Process \\d+ running (\\d+) transfers\\.\\.\\.$")
         private val EXIT = Regex("^\\S+ exit=(\\d+)$")
 
@@ -154,7 +141,6 @@ data class JackHammerOutcome(
 
         fun parse(lines: List<String>): JackHammerOutcome {
             val trimmed = lines.map(String::trim)
-            val modes = trimmed.mapNotNull { MODE.find(it)?.groupValues?.get(1) }.distinct()
             val afterReconciling = trimmed.dropWhile { it != "Reconciling..." }.drop(1)
             return JackHammerOutcome(
                 workers =
@@ -165,7 +151,6 @@ data class JackHammerOutcome(
                             ?.get(1)
                             ?.toInt()
                     },
-                workerMode = modes.single(),
                 flushes = trimmed.count { it == "Flushing balances" },
                 transfers =
                     trimmed.sumOf {
