@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.softberries.doubleentry.config.DoubleEntryTables
-import com.softberries.doubleentry.instrumentation.DoubleEntryEvent
 import com.softberries.doubleentry.parity.Comparison
 import com.softberries.doubleentry.parity.NotificationCapture
 import com.softberries.doubleentry.parity.ObservedNotification
@@ -13,17 +12,7 @@ import com.softberries.doubleentry.parity.OracleNotification
 import com.softberries.doubleentry.parity.SqlProtocolStep
 import com.softberries.doubleentry.parity.config.KotlinOutcome
 import com.softberries.doubleentry.testing.MigrationSpec
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import kotlin.io.path.readLines
-
-/** Adds notification capture to the concurrency suite's context (which already captures SQL). */
-@TestConfiguration(proxyBeanMethods = false)
-class LockingParityConfiguration {
-    @Bean
-    fun lockingNotificationCapture(): NotificationCapture =
-        NotificationCapture { event -> (event as? DoubleEntryEvent)?.let { ObservedNotification(it.name, it.exception.message) } }
-}
 
 /** How a scenario is compared with the oracle. */
 enum class Compared {

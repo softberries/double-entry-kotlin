@@ -8,6 +8,7 @@ import com.softberries.doubleentry.balance.cache.AccountBalanceEntity
 import com.softberries.doubleentry.balance.cache.AccountBalanceRepository
 import com.softberries.doubleentry.concurrency.ConcurrencyIntegrationTest
 import com.softberries.doubleentry.config.DoubleEntryTables
+import com.softberries.doubleentry.instrumentation.DoubleEntryEvent
 import com.softberries.doubleentry.locking.BalanceRowCreator
 import com.softberries.doubleentry.locking.BalanceRowInserter
 import com.softberries.doubleentry.locking.Locking
@@ -41,6 +42,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import jakarta.persistence.EntityManager
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -51,7 +53,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Import
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.dao.DataAccessException
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -73,13 +75,12 @@ import kotlin.io.path.readText
  * state only ([Compared.FINAL_STATE]). The `oracle/concurrency/jack_hammer_*.txt` runs are replayed with the M-015
  * jack hammer at the oracle's shape, and their reconciliation output is compared line by line.
  *
- * It runs in the concurrency suite's context (M-015: the oracle's standard accounts, the jack hammer accounts, a pool
- * large enough for 20 workers, SQL capture) plus notification capture. Scenarios listed in
+ * It shares the concurrency suite's Spring context (M-015: the oracle's standard accounts, the jack hammer accounts, a
+ * pool large enough for 20 workers, SQL capture) and attaches a notification capture per test. Scenarios listed in
  * `parity/locking.deviations.json` are still run: they must match their [LockingExpectation] (from
  * `docs/decisions.md`), must differ from the oracle, and are reported as `deviation (X-nn)` with the oracle diff. The
  * report is `build/reports/parity/locking.md`.
  */
-@Import(LockingParityConfiguration::class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class LockingParityTest : ConcurrencyIntegrationTest() {
     @Autowired
@@ -104,10 +105,23 @@ class LockingParityTest : ConcurrencyIntegrationTest() {
     private lateinit var dataSource: DataSource
 
     @Autowired
-    private lateinit var notifications: NotificationCapture
+    private lateinit var context: ConfigurableApplicationContext
 
+    private val notifications =
+        NotificationCapture { event -> (event as? DoubleEntryEvent)?.let { ObservedNotification(it.name, it.exception.message) } }
+
+    /**
+     * Attached per test instead of as a bean: a bean would give this driver a Spring context of its own, with another
+     * pool of [com.softberries.doubleentry.concurrency.JackHammerSettings.POOL_SIZE] connections next to the cached ones.
+     */
     @BeforeEach
-    fun clearNotifications() = notifications.clear()
+    fun attachNotificationCapture() {
+        notifications.clear()
+        context.addApplicationListener(notifications)
+    }
+
+    @AfterEach
+    fun detachNotificationCapture() = context.removeApplicationListener(notifications)
 
     /** One scenario: the Kotlin port of its `tools/oracle.rb` block, and for a deviation the Kotlin expectation. */
     private class Case(
