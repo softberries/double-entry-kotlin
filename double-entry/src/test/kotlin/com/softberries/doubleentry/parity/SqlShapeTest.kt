@@ -37,6 +37,22 @@ class SqlShapeTest {
     }
 
     @Test
+    fun `withoutReadOnlyTransactions unwraps only transactions of plain SELECTs`() {
+        fun step(
+            verb: String,
+            table: String? = "double_entry_lines",
+            forUpdate: Boolean = false,
+        ) = SqlProtocolStep(table.takeUnless { verb in SqlShape.TRANSACTION_VERBS }, verb, emptyList(), forUpdate)
+        val read = listOf(step("BEGIN"), step("SELECT"), step("COMMIT"))
+        val lock = listOf(step("BEGIN"), step("SELECT", forUpdate = true), step("COMMIT"))
+        val write = listOf(step("BEGIN"), step("SELECT"), step("INSERT"), step("COMMIT"))
+        val rolledBack = listOf(step("BEGIN"), step("SELECT"), step("ROLLBACK"))
+
+        SqlCapture.withoutReadOnlyTransactions(read + lock + write + rolledBack + read) shouldContainExactly
+            listOf(step("SELECT")) + lock + write + rolledBack + listOf(step("SELECT"))
+    }
+
+    @Test
     fun `ActiveRecord lock statement shape`() {
         val shape = SqlCapture.fromRubyLog(OracleScenarios.load("transfer_scoped_basic").sql)[4]
 
