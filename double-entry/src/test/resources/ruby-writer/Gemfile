@@ -1,0 +1,8 @@
+# Gems of the investigator's oracle environment (Gemfile.investigator, copied verbatim from
+# migration-spec/tools), pinned to the versions recorded in migration-spec/oracle/environment.txt.
+# U-003: only ActiveRecord 8.1.4 is covered; hosts on Rails < 7.2 are not.
+eval_gemfile 'Gemfile.investigator'
+gem 'activerecord', '8.1.4'
+gem 'activesupport', '8.1.4'
+gem 'railties', '8.1.4'
+gem 'money', '7.1.1'

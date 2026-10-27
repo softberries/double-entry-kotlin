@@ -1,0 +1,7 @@
+# Investigator Gemfile: the repo's gemspec minus mysql2 (no libmysqlclient in sandbox), ruby-prof < 2 (2.x API break)
+source 'https://rubygems.org'
+gemspec path: '../src', development_group: :gemspec_dev
+group :investigator do
+  %w[pg rake sqlite3 database_cleaner factory_bot generator_spec rspec rspec-its timecop].each { |g| gem g }
+  gem 'ruby-prof', '< 2'
+end
