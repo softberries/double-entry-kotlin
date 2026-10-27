@@ -207,11 +207,12 @@ class MixedWritersTest {
             summary.errors.shouldBeEmpty()
             return MixedRun(summary, windowStart, windowEnd)
         } finally {
-            // The gate is a pooled connection: closing it keeps the session (and a session advisory lock) alive, so a run
-            // that failed before the unlock above must release the lock explicitly.
-            gate.use { it.createStatement().use { s -> s.execute("SELECT pg_advisory_unlock_all()") } }
             executor.shutdownNow()
             ruby.stop()
+            // The gate is a pooled connection: closing it keeps the session (and a session advisory lock) alive, so a run
+            // that failed before the unlock above must release the lock explicitly. Last, so a broken connection cannot
+            // skip the container and executor cleanup.
+            gate.use { it.createStatement().use { s -> s.execute("SELECT pg_advisory_unlock_all()") } }
         }
     }
 
