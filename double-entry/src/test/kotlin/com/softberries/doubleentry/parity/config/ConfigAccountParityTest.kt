@@ -3,7 +3,6 @@ package com.softberries.doubleentry.parity.config
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.softberries.doubleentry.DoubleEntry
 import com.softberries.doubleentry.config.DoubleEntryConfiguration
-import com.softberries.doubleentry.config.DoubleEntryConfigurationBuilder
 import com.softberries.doubleentry.config.DoubleEntryProperties
 import com.softberries.doubleentry.config.DoubleEntryTables
 import com.softberries.doubleentry.config.doubleEntry
@@ -145,13 +144,13 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
             .assertMatches(id)
 
         assertOracle("config_account_identifier_max_length_ok") {
-            doubleEntryOnly(limits(accountIdentifier = 5)) { accounts { define("abcde") } }.accounts.findWithoutScope("abcde")
+            doubleEntry(limits(accountIdentifier = 5)) { accounts { define("abcde") } }.accounts.findWithoutScope("abcde")
         }
         assertOracle("config_account_identifier_too_long") {
-            doubleEntryOnly(limits(accountIdentifier = 5)) { accounts { define("abcdef") } }
+            doubleEntry(limits(accountIdentifier = 5)) { accounts { define("abcdef") } }
         }
         assertOracle("config_code_too_long") {
-            doubleEntryOnly(limits(code = 4)) { transfers { define("a", "b", "abcde") } }.transfers.find("a", "b", "abcde")
+            doubleEntry(limits(code = 4)) { transfers { define("a", "b", "abcde") } }.transfers.find("a", "b", "abcde")
         }
     }
 
@@ -188,17 +187,6 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
         @JvmStatic
         fun scenarioIds(): List<String> = ParityArea.CONFIG_AND_ACCOUNTS.scenarioIds
 
-        /** A configuration holding only what [block] defines. */
-        private fun doubleEntryOnly(
-            properties: DoubleEntryProperties,
-            block: DoubleEntryConfigurationBuilder.() -> Unit,
-        ): DoubleEntryConfiguration = doubleEntry(properties, block)
-
-        private fun exception(
-            rubyClass: String,
-            message: String,
-        ) = OracleException(rubyClass, message)
-
         /** The scenario blocks of `tools/oracle.rb:147-185`, in the same order. */
         private val CASES: Map<String, Case> =
             mapOf(
@@ -217,7 +205,7 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
                     Case(
                         Expected(
                             exception =
-                                exception(
+                                OracleException(
                                     "DoubleEntry::AccountIdentifierTooLongError",
                                     "account identifier 'savings' is too long. Please limit it to 5 characters.",
                                 ),
@@ -231,7 +219,7 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
                     Case(
                         Expected(
                             exception =
-                                exception(
+                                OracleException(
                                     "DoubleEntry::AccountIdentifierTooLongError",
                                     "account identifier 'savings' is too long. Please limit it to 5 characters.",
                                 ),
@@ -241,7 +229,7 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
                     Case(
                         Expected(
                             exception =
-                                exception(
+                                OracleException(
                                     "DoubleEntry::TransferCodeTooLongError",
                                     "transfer code 'deposit' is too long. Please limit it to 4 characters.",
                                 ),
