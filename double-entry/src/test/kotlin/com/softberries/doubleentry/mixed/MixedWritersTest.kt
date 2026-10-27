@@ -207,8 +207,9 @@ class MixedWritersTest {
             summary.errors.shouldBeEmpty()
             return MixedRun(summary, windowStart, windowEnd)
         } finally {
-            // Closing the session also drops the gate lock if the run failed before the unlock above.
-            gate.close()
+            // The gate is a pooled connection: closing it keeps the session (and a session advisory lock) alive, so a run
+            // that failed before the unlock above must release the lock explicitly.
+            gate.use { it.createStatement().use { s -> s.execute("SELECT pg_advisory_unlock_all()") } }
             executor.shutdownNow()
             ruby.stop()
         }
