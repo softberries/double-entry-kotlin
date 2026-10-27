@@ -47,6 +47,11 @@ com.softberries.doubleentry.{money, errors, instrumentation, config, account, le
 - Name the Ruby spec examples a test ports in its KDoc (e.g. `line_spec.rb [1:2:4]`). Where a test checks an oracle
   sample, read it from `migration-spec/oracle/` through `MigrationSpec`.
 - Never skip, disable or weaken a test to get a green build.
+- Mixed Ruby + Kotlin writers (D-017, M-016): `mixed.MixedWritersTest` (tag `mixed`) runs the Ruby gem in a container
+  built from `double-entry/src/test/resources/ruby-writer` next to Kotlin threads on its own `postgres:17`. It is kept
+  out of `test`/`check`; run it with `./gradlew :double-entry:mixedWritersTest` (CI job `mixed-writers`). The first run
+  builds the image (~3 min); later runs reuse Docker's layer cache. To track another gem commit, change
+  `DOUBLE_ENTRY_COMMIT` in the Dockerfile.
 
 ## Database
 
