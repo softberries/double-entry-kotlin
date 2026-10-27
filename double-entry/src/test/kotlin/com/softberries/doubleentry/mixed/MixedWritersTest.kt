@@ -181,8 +181,8 @@ class MixedWritersTest {
                     "FLUSH_AT_LINES" to flushAtLines.joinToString(","),
                 ),
             )
+        val gate = dataSource.connection
         try {
-            val gate = dataSource.connection
             gate.createStatement().use { it.execute("SELECT pg_advisory_lock($GATE_LOCK)") }
             ruby.start()
             val start = CountDownLatch(1)
@@ -196,7 +196,7 @@ class MixedWritersTest {
                 }
             val windowStart = utcNow().minusSeconds(CLOCK_TOLERANCE_SECONDS)
             start.countDown()
-            gate.use { it.createStatement().use { s -> s.execute("SELECT pg_advisory_unlock($GATE_LOCK)") } }
+            gate.createStatement().use { it.execute("SELECT pg_advisory_unlock($GATE_LOCK)") }
 
             futures.forEach { it.get(5, TimeUnit.MINUTES) }
             val summary = RubyWriter.awaitSummary(ruby, Duration.ofMinutes(5))
@@ -207,6 +207,8 @@ class MixedWritersTest {
             summary.errors.shouldBeEmpty()
             return MixedRun(summary, windowStart, windowEnd)
         } finally {
+            // Closing the session also drops the gate lock if the run failed before the unlock above.
+            gate.close()
             executor.shutdownNow()
             ruby.stop()
         }
@@ -291,34 +293,29 @@ class MixedWritersTest {
     }
 
     /**
-     * `docs/50-data.md` §7 on 10 sampled lines per writer: the same checks pass for both, and the per-row encoding
-     * signature (scope form, metadata key types, detail form) of one writer's sample is also found in the other's.
+     * `docs/50-data.md` §7 on 10 sampled lines per writer: every row passes the same per-row checks, both samples have
+     * the same metadata key/type shape, and every detail is `User#1` or absent.
      */
     private fun assertSameEncoding(run: MixedRun) {
-        val signatures =
+        val samples =
             listOf("ruby", "kotlin").associateWith { writer ->
-                val rows = sample(writer)
-                rows shouldHaveSize 10
-                rows.map { assertEncoding(writer, it, run) }.toSet()
+                sample(writer).also { rows ->
+                    rows shouldHaveSize 10
+                    rows.forEach { assertEncoding(writer, it, run) }
+                }
             }
-        withClue("encoding signatures by writer: $signatures") {
-            signatures.getValue("ruby").map { it.metadataShape }.toSet() shouldBe
-                signatures.getValue("kotlin").map { it.metadataShape }.toSet()
-            (signatures.getValue("ruby") + signatures.getValue("kotlin")).forEach { it.detail shouldContainIn DETAIL_FORMS }
+        withClue("samples by writer: $samples") {
+            samples.getValue("ruby").map { it["metadata_shape"] }.toSet() shouldBe
+                samples.getValue("kotlin").map { it["metadata_shape"] }.toSet()
+            samples.values.flatten().forEach { DETAIL_FORMS shouldContain "${it["detail_type"]}#${it["detail_id"]}" }
         }
     }
-
-    private data class Signature(
-        val scoped: Boolean,
-        val metadataShape: String,
-        val detail: String,
-    )
 
     private fun assertEncoding(
         writer: String,
         row: Map<String, Any?>,
         run: MixedRun,
-    ): Signature =
+    ) {
         withClue("$writer line $row") {
             val account = row["account"] as String
             val partnerAccount = row["partner_account"] as String
@@ -356,8 +353,8 @@ class MixedWritersTest {
             row["metadata_shape"] shouldBe METADATA_SHAPE
             row["writer"] shouldBe writer
             row["tags"] shouldBe """["mixed", "d-017"]"""
-            Signature(account in SCOPED, row["metadata_shape"] as String, "${row["detail_type"]}#${row["detail_id"]}")
         }
+    }
 
     private fun sample(writer: String): List<Map<String, Any?>> =
         jdbcTemplate
@@ -414,8 +411,6 @@ class MixedWritersTest {
         }
         jdbcTemplate.queryForObject("SELECT COUNT(*) FROM double_entry_line_checks WHERE errors_found", Long::class.java) shouldBe 0L
     }
-
-    private infix fun String.shouldContainIn(allowed: Set<String>) = allowed shouldContain this
 
     private fun utcNow(): LocalDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
 
