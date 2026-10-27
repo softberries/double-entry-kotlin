@@ -1,5 +1,6 @@
 package com.softberries.doubleentry.concurrency
 
+import com.softberries.doubleentry.account.AccountInstance
 import com.softberries.doubleentry.config.DoubleEntryConfigurer
 import com.softberries.doubleentry.instrumentation.DoubleEntryEvent
 import com.softberries.doubleentry.instrumentation.DoubleEntryEventType
@@ -13,6 +14,7 @@ import org.awaitility.kotlin.withPollInterval
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.TestReporter
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
@@ -28,6 +30,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.random.Random
 
 /**
  * The accounts of `script/jack_hammer:85-104`: `account-0` … `account-<n-1>`, identity-scoped, with a `test` transfer
@@ -138,6 +141,66 @@ abstract class ConcurrencyIntegrationTest : TransferIntegrationTestBase() {
         failures.map { it.toString() }.shouldBeEmpty()
     }
 
+    /** The jack hammer accounts (`script/jack_hammer:85-104`), all with scope identity 1. */
+    protected val jackHammerAccounts: List<AccountInstance>
+        get() = (0 until JackHammerSettings.ACCOUNTS).map { resolver.account(JackHammerSettings.accountIdentifier(it), scope = 1) }
+
+    /**
+     * `run_tests` (`script/jack_hammer:113-140`): for each flush, delete every balance row, then let the workers run
+     * their share. Ruby gives each worker `transfers / workers / flushes` (at least 1); the remainder is spread here so
+     * exactly `transfers` are made and `lines = 2 × transfers` holds for any scale. Shared by [JackHammerTest] (M-015)
+     * and the locking parity driver (M-021), which replays the oracle runs' shape.
+     */
+    protected fun jackHammer(
+        balanceFlushCount: Int,
+        reporter: TestReporter,
+        workers: Int = JackHammerSettings.workers,
+        total: Int = JackHammerSettings.transfers,
+    ): JackHammerRun {
+        val seed = JackHammerSettings.seed
+        val accounts = jackHammerAccounts
+        log.info(
+            "jack hammer: accounts={} workers={} transfers={} flushes={} seed={}",
+            accounts.size,
+            workers,
+            total,
+            balanceFlushCount,
+            seed,
+        )
+        val started = System.nanoTime()
+        // One deadline for the whole run (no fixed @Timeout): it scales with `-Pjackhammer.full`.
+        val deadline = started + JackHammerSettings.timeout.toNanos()
+        var maxRowIdBeforeLastFlush = 0L
+        var done = 0
+        repeat(balanceFlushCount) { flush ->
+            maxRowIdBeforeLastFlush = maxBalanceRowId()
+            jdbcTemplate.update("DELETE FROM double_entry_account_balances")
+            val batch = total / balanceFlushCount + if (flush < total % balanceFlushCount) 1 else 0
+            runInParallel(workers, timeout = Duration.ofNanos(maxOf(deadline - System.nanoTime(), 1_000_000))) { worker ->
+                val iterations = batch / workers + if (worker < batch % workers) 1 else 0
+                // `srand` per process in Ruby; a fixed, logged seed per (flush, worker) here, so a failure can be replayed.
+                val random = Random(seed + flush * 1_000L + worker)
+                repeat(iterations) {
+                    if (cancelled) return@runInParallel
+                    val from = accounts.random(random)
+                    val to = (accounts - from).random(random)
+                    transfers.transfer(usd(random.nextLong(1000) + 1), from = from, to = to, code = JackHammerSettings.CODE)
+                }
+            }
+            done += batch
+        }
+        val elapsedMs = (System.nanoTime() - started) / 1_000_000
+        val report = "transfers=$done flushes=$balanceFlushCount seed=$seed elapsedMs=$elapsedMs ${events.summary()}"
+        log.info("jack hammer finished: {}", report)
+        reporter.publishEntry("jackHammer", report)
+        return JackHammerRun(done, maxRowIdBeforeLastFlush, balanceRowIds())
+    }
+
+    private fun maxBalanceRowId(): Long =
+        jdbcTemplate.queryForObject("SELECT COALESCE(MAX(id), 0) FROM double_entry_account_balances", Long::class.java)!!
+
+    private fun balanceRowIds(): List<Long> = jdbcTemplate.queryForList("SELECT id FROM double_entry_account_balances", Long::class.java)
+
     /** Sum of every line amount: zero in a double-entry ledger. */
     protected fun sumOfAmounts(): Long =
         jdbcTemplate.queryForObject("SELECT COALESCE(SUM(amount), 0) FROM double_entry_lines", Long::class.java)!!
@@ -174,6 +237,13 @@ abstract class ConcurrencyIntegrationTest : TransferIntegrationTestBase() {
         }
     }
 }
+
+/** Outcome of [ConcurrencyIntegrationTest.jackHammer]. */
+class JackHammerRun(
+    val transfers: Int,
+    val maxRowIdBeforeLastFlush: Long,
+    val rowIdsAfter: List<Long>,
+)
 
 /**
  * Scale of the jack hammer run. Ruby defaults (`script/jack_hammer:46-50`) are 5 accounts, 20 workers and 20000
