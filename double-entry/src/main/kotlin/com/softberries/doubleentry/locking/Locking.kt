@@ -137,8 +137,10 @@ class Locking internal constructor(
 
     /**
      * `Lock#create_missing_account_balances` (`locking.rb:164-171`): per account, in lock order, the BR-040 balance
-     * from the lines (outside any lock), then an insert in its own transaction that tolerates a concurrent creator.
-     * These rows stay even if the block later fails (BR-031).
+     * from the lines (outside any lock), then an insert that tolerates a concurrent creator ([BalanceRowCreator]).
+     * No transaction is active here outside the fixtures flag, so each insert commits on its own and the rows stay even
+     * if the block later fails (BR-031). With `runningInsideTransactionalFixtures` (D-007) they join the host's
+     * transaction and roll back with it, as Ruby's `create!` does.
      */
     private fun createMissingAccountBalances(accounts: List<AccountInstance>) {
         for (account in accounts) {
