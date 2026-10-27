@@ -1,0 +1,26 @@
+{
+  "account_scope_identity_integer": {
+    "xRef": "X-08",
+    "kotlinExpectation": "scopeIdentity is always a String (D-014): scope_identity 42 is \"42\" (class String), not the Integer 42"
+  },
+  "account_string_identifier": {
+    "xRef": "X-11",
+    "kotlinExpectation": "Proposed X-11 (Symbol/String collapse, D-013 'impossible by typing'): identifiers are Strings, so account(\"bank\") is the unscoped bank account instead of UnknownAccount"
+  },
+  "config_defaults": {
+    "xRef": "X-02",
+    "kotlinExpectation": "No json_metadata setting (metadata is always jsonb, D-004); every other default is identical"
+  },
+  "config_account_identifier_max_length_ok": {
+    "xRef": "X-09",
+    "kotlinExpectation": "The max length is a build-time setting that applies to every definition (D-016): the oracle's standard configuration plus the limit 5 fails on 'savings'; a configuration built with the limit and only 'abcde' gives the oracle result"
+  },
+  "config_account_identifier_too_long": {
+    "xRef": "X-09",
+    "kotlinExpectation": "The max length is a build-time setting that applies to every definition (D-016): the oracle's standard configuration plus the limit 5 fails on 'savings'; a configuration built with the limit and only 'abcdef' raises the oracle exception exactly"
+  },
+  "config_code_too_long": {
+    "xRef": "X-09",
+    "kotlinExpectation": "The max length is a build-time setting that applies to every definition (D-016): the oracle's standard configuration plus the limit 4 fails on 'deposit'; a configuration built with the limit and only a→b 'abcde' raises the oracle exception exactly"
+  }
+}
