@@ -156,14 +156,36 @@ tasks.named("publishMavenPublicationToBuildRepository") {
 // publishing is never up-to-date (timestamped snapshots, maven-metadata.xml), so as inputs of `test` it would rerun the
 // whole Testcontainers suite on every build and defeat the build cache.
 val publicationTestPackage = "com.softberries.doubleentry.publication.*"
+val mixedWritersTag = "mixed"
 
 tasks.named<Test>("test") {
     filter { excludeTestsMatching(publicationTestPackage) }
+    // Mixed Ruby + Kotlin writers (M-016) build a Ruby image; they run in `mixedWritersTest` only.
+    useJUnitPlatform { excludeTags(mixedWritersTag) }
     // Concurrency suite (M-015): `-Pjackhammer.full` runs the Ruby scale (20 workers, 20000 transfers),
     // `-Pjackhammer.seed=<n>` replays a logged seed.
     providers.gradleProperty("jackhammer.full").orNull?.let { systemProperty("jackhammer.full", it.ifBlank { "true" }) }
     providers.gradleProperty("jackhammer.seed").orNull?.let { systemProperty("jackhammer.seed", it) }
 }
+
+// Mixed Ruby + Kotlin writers test (M-016, D-017): Testcontainers with postgres:17 and a Ruby image built from
+// src/test/resources/ruby-writer. Not part of `check`; CI runs it in the `mixed-writers` job.
+val mixedWritersTest =
+    tasks.register<Test>("mixedWritersTest") {
+        description = "Runs the mixed Ruby + Kotlin writers test (tag `mixed`, M-016); needs Docker and network access."
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        testClassesDirs =
+            sourceSets.test
+                .get()
+                .output.classesDirs
+        classpath = sourceSets.test.get().runtimeClasspath
+        useJUnitPlatform { includeTags(mixedWritersTag) }
+        // Not UTC on purpose: rows must still carry UTC timestamps (BR-035), as from the Ruby container (TZ set there too).
+        systemProperty("user.timezone", "Australia/Melbourne")
+        // The outcome depends on Docker and the remote gem sources, not only on the inputs Gradle sees.
+        outputs.upToDateWhen { false }
+        outputs.cacheIf { false }
+    }
 
 val publicationTest =
     tasks.register<Test>("publicationTest") {

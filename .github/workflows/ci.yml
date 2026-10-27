@@ -54,3 +54,28 @@ jobs:
             **/build/test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  # Mixed Ruby + Kotlin writers (M-016, D-017): builds the Ruby gem image (~2–3 min, needs rubygems.org and GitHub)
+  # and runs MixedWritersTest. Kept out of `build` so the default test task stays Docker-image-free.
+  mixed-writers:
+    name: mixed-writers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      - run: ./gradlew :double-entry:mixedWritersTest --no-daemon --max-workers=2
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mixed-writers-reports
+          path: |
+            double-entry/build/reports/tests/mixedWritersTest/
+            double-entry/build/test-results/mixedWritersTest/
+          if-no-files-found: ignore
+          retention-days: 7
