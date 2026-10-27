@@ -424,13 +424,22 @@ class LockingExtensionsIntegrationTest : BalanceIntegrationTest() {
     }
 
     @Test
-    fun `the row is committed in its own transaction even when the caller's transaction rolls back`() {
+    fun `without an enclosing transaction the row is committed in its own transaction`() {
+        creator.createIgnoringDuplicates(account("cash"), Money.zero(account("cash").currency)).shouldNotBeNull()
+
+        TransactionTemplate(transactionManager).executeWithoutResult { status -> status.setRollbackOnly() }
+        balanceRows().map { it["account"] } shouldContainExactly listOf("cash")
+    }
+
+    @Test
+    fun `inside an enclosing transaction the row joins it and rolls back with it, as Ruby create! does`() {
+        // transfer_inside_transaction_with_fixtures_flag.json: the balance-row INSERTs run inside the outer BEGIN.
         TransactionTemplate(transactionManager).executeWithoutResult { status ->
             creator.createIgnoringDuplicates(account("cash"), Money.zero(account("cash").currency)).shouldNotBeNull()
             status.setRollbackOnly()
         }
 
-        balanceRows().map { it["account"] } shouldContainExactly listOf("cash")
+        balanceRows().shouldBeEmpty()
     }
 
     private fun creatorWith(inserter: BalanceRowInserter) = BalanceRowCreator(transactionManager, inserter, libraryClock, publisher)

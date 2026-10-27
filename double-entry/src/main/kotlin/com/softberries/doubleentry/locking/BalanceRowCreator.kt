@@ -18,7 +18,10 @@ import java.time.temporal.ChronoUnit
 
 /**
  * Port of `AccountBalance.create_ignoring_duplicates!` (`locking_extensions.rb:31-72`, BR-069): creates the balance
- * row of an account in its own transaction (`REQUIRES_NEW`), tolerating a concurrent writer that created it first.
+ * row of an account, tolerating a concurrent writer that created it first. Like Ruby's `create!` it runs in its own
+ * transaction when none is active (always the case outside the fixtures flag, BR-062) and joins the enclosing one
+ * otherwise: with `runningInsideTransactionalFixtures` (D-007) the row belongs to the host's test transaction and is
+ * rolled back with it (`transfer_inside_transaction_with_fixtures_flag.json`: the INSERTs run inside the outer BEGIN).
  *
  * - unique violation (SQLSTATE `23505`) → `duplicate_ignore.double_entry` is published and the error swallowed;
  * - deadlock (`40P01`) → `deadlock_retry.double_entry` is published and the insert retried, without limit (as Ruby);
@@ -35,7 +38,7 @@ class BalanceRowCreator internal constructor(
 ) {
     private val transactionTemplate =
         TransactionTemplate(transactionManager).apply {
-            propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
+            propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRED
         }
 
     /**
