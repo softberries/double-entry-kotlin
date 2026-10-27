@@ -1,0 +1,14 @@
+{
+  "linecheck_line_error_no_fixer": {
+    "xRef": "X-06",
+    "kotlinExpectation": "D-011/BR-095: log header lines byte-identical; record dumps in the documented Kotlin rendering `Line(id: 1, account: \"bank\", …)` instead of Ruby `#<DoubleEntry::Line …>` inspect, equal field by field (id, account, scope, code, amount, balance, partner_*, detail_*, metadata; timestamps by pattern); rows, result, SQL and notifications as in the oracle"
+  },
+  "linecheck_line_error_with_fixer": {
+    "xRef": "X-06",
+    "kotlinExpectation": "D-011/BR-095: log header lines byte-identical; record dumps in the documented Kotlin rendering `Line(id: 1, account: \"bank\", …)` instead of Ruby `#<DoubleEntry::Line …>` inspect, equal field by field (id, account, scope, code, amount, balance, partner_*, detail_*, metadata; timestamps by pattern); rows (line corrected by AccountFixer), result, SQL and notifications as in the oracle"
+  },
+  "linecheck_unscoped_accounts": {
+    "xRef": "X-06",
+    "kotlinExpectation": "D-011/BR-095: log header lines byte-identical; record dumps (including the `[previous line]` list) in the documented Kotlin rendering instead of Ruby inspect, equal field by field; rows (cash line corrected by AccountFixer), result, SQL and notifications as in the oracle"
+  }
+}
