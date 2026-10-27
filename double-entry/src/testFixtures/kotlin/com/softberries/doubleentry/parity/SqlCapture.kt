@@ -17,6 +17,12 @@ data class RubyStatement(
     val binds: List<Any?>,
 )
 
+/** A statement a Kotlin run sent: its [shape] and the bound values in parameter order (none for transaction control). */
+data class CapturedStatement(
+    val shape: SqlShape,
+    val binds: List<Any?>,
+)
+
 /**
  * Records the statements a Kotlin run sends over JDBC (datasource-proxy) and reduces them to [SqlShape]s, the same
  * reduction [fromRubyLog] applies to an oracle `sql` list. Transaction boundaries come from the connection calls:
@@ -25,10 +31,13 @@ data class RubyStatement(
  * Wire it with [wrap] for a plain [DataSource] or [beanPostProcessor] for the Spring context of a parity driver.
  */
 class SqlCapture {
-    private val recorded = CopyOnWriteArrayList<SqlShape>()
+    private val recorded = CopyOnWriteArrayList<CapturedStatement>()
 
     /** Every recorded statement, in execution order. */
-    val shapes: List<SqlShape> get() = recorded.toList()
+    val shapes: List<SqlShape> get() = recorded.map { it.shape }
+
+    /** [shapes] with their bound values, e.g. to check which account each `FOR UPDATE` locked. */
+    val statements: List<CapturedStatement> get() = recorded.toList()
 
     /** The protocol view of [shapes]: see [protocol]. */
     val protocolSteps: List<SqlProtocolStep> get() = protocol(shapes)
@@ -70,7 +79,7 @@ class SqlCapture {
                             parameters
                                 .sortedBy { (it.args[0] as? Int) ?: 0 }
                                 .map { if (it.method.name == "setNull") null else it.args.getOrNull(1) }
-                        recorded += SqlShape.parse(query.query, binds)
+                        recorded += CapturedStatement(SqlShape.parse(query.query, binds), binds)
                     }
                 }
             }
@@ -92,7 +101,7 @@ class SqlCapture {
                         "releaseSavepoint" -> "RELEASE SAVEPOINT"
                         else -> null
                     }
-                if (verb != null) recorded += SqlShape(table = null, verb = verb)
+                if (verb != null) recorded += CapturedStatement(SqlShape(table = null, verb = verb), emptyList())
             }
         }
 
