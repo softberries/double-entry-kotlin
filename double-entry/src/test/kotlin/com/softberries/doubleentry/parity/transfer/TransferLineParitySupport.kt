@@ -160,18 +160,10 @@ object TransferLineOutcomes {
         return Comparison.of("result: expected <$want> but was <$got>".takeUnless { RowComparator.semanticEquals(want, got) })
     }
 
-    /** The oracle `db_after` of [id] with [table] emptied (Kotlin wrote nothing there). */
+    /** The oracle `db_after` of [id] with [tables] emptied (Kotlin wrote nothing there). */
     fun dbAfterWithout(
         id: String,
         vararg tables: String,
     ): Map<String, List<ObjectNode>> =
-        OracleScenarios.load(id).dbAfter.mapValues { (table, rows) ->
-            if (table in
-                tables
-            ) {
-                emptyList()
-            } else {
-                rows
-            }
-        }
+        OracleScenarios.load(id).dbAfter.mapValues { (table, rows) -> if (table in tables) emptyList() else rows }
 }

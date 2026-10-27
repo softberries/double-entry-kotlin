@@ -9,6 +9,7 @@ import com.softberries.doubleentry.balance.BalanceCalculator
 import com.softberries.doubleentry.balance.cache.AccountBalanceUpdater
 import com.softberries.doubleentry.config.DoubleEntryConfiguration
 import com.softberries.doubleentry.config.DoubleEntryTables
+import com.softberries.doubleentry.errors.AccountWouldBeSentNegative
 import com.softberries.doubleentry.errors.DoubleEntryException
 import com.softberries.doubleentry.ledger.DetailRef
 import com.softberries.doubleentry.ledger.Line
@@ -40,6 +41,7 @@ import com.softberries.doubleentry.parity.transfer.TransferLineOutcomes.dbAfterW
 import com.softberries.doubleentry.testing.PostgresIntegrationTest
 import com.softberries.doubleentry.transfer.TransferResult
 import com.softberries.doubleentry.transfer.TransferService
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.comparables.shouldBeGreaterThan
@@ -269,7 +271,12 @@ class TransferLineParityTest : PostgresIntegrationTest() {
     fun `named db_after values of the oracle are reproduced`() {
         fun lineValues(id: String): List<List<String>> {
             cleanDatabase()
-            runCatching { CASES.getValue(id).run(this) }
+            if (id == "transfer_positive_only_violation") {
+                // BR-031 is about the rows a *failed* transfer leaves: the oracle's AccountWouldBeSentNegative.
+                shouldThrow<AccountWouldBeSentNegative> { CASES.getValue(id).run(this) }
+            } else {
+                CASES.getValue(id).run(this)
+            }
             return DbSnapshot.read(jdbcTemplate.dataSource!!).getValue(DoubleEntryTables.LINES).map { row ->
                 listOf("amount", "detail_type", "detail_id", "metadata").map { row[it].toString() }
             }
