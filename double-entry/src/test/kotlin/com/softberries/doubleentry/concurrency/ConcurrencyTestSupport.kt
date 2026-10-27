@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
 /**
@@ -39,7 +40,7 @@ class ConcurrencyTestConfiguration {
     fun jackHammerDefinitions(): DoubleEntryConfigurer =
         DoubleEntryConfigurer { builder ->
             val identity: (Any) -> Any? = { it }
-            val identifiers = (0 until JackHammerSettings.MAX_ACCOUNTS).map { JackHammerSettings.accountIdentifier(it) }
+            val identifiers = (0 until JackHammerSettings.ACCOUNTS).map { JackHammerSettings.accountIdentifier(it) }
             builder.accounts { identifiers.forEach { define(it, scopeIdentifier = identity) } }
             builder.transfers {
                 for (from in identifiers) {
@@ -88,15 +89,29 @@ abstract class ConcurrencyIntegrationTest : TransferIntegrationTestBase() {
 
     private lateinit var executor: ExecutorService
 
+    /** Set when the test ends (passed, failed or timed out); long-running workers poll it via [cancelled]. */
+    @Volatile
+    private var stopRequested = false
+
+    /** True once the test is over: a worker loop must return so it cannot touch the next test's database. */
+    protected val cancelled: Boolean get() = stopRequested
+
     @BeforeEach
     fun startExecutor() {
         events.reset()
+        stopRequested = false
         executor = Executors.newFixedThreadPool(JackHammerSettings.MAX_WORKERS)
     }
 
+    /**
+     * Stops the workers before the next test's `@BeforeEach` truncates the tables: otherwise a worker that outlived a
+     * failed or timed-out test keeps transferring, and the `TRUNCATE` deadlocks against it.
+     */
     @AfterEach
     fun stopExecutor() {
+        stopRequested = true
         executor.shutdownNow()
+        check(executor.awaitTermination(60, TimeUnit.SECONDS)) { "concurrency workers did not stop within 60 s" }
     }
 
     /**
@@ -168,7 +183,6 @@ abstract class ConcurrencyIntegrationTest : TransferIntegrationTestBase() {
 object JackHammerSettings {
     const val CODE = "test"
     const val ACCOUNTS = 5
-    const val MAX_ACCOUNTS = 5
     const val MAX_WORKERS = 20
 
     // Every worker holds one connection; + test thread + headroom.
@@ -178,6 +192,9 @@ object JackHammerSettings {
     val workers: Int = if (full) 20 else 8
     val transfers: Int = if (full) 20_000 else 2_000
     val seed: Long = System.getProperty("jackhammer.seed")?.toLongOrNull() ?: 20_141_013L
+
+    /** Budget for a whole jack hammer run (all flushes): 80 s keeps the default suite under 90 s; the full run gets 20 min. */
+    val timeout: Duration = if (full) Duration.ofMinutes(20) else Duration.ofSeconds(80)
 
     fun accountIdentifier(index: Int) = "account-$index"
 }

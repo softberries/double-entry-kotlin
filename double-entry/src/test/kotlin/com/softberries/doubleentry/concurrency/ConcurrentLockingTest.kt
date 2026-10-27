@@ -61,7 +61,7 @@ class ConcurrentLockingTest : ConcurrencyIntegrationTest() {
         bankBalance.toString() shouldBe oracle["bank"]["money"]["to_s"].asText()
         val cachedCash = cachedBalances().single { it.first == "cash" }.second
         cachedCash shouldBe oracle["cash_cached"]["money"]["fractional"].asLong()
-        oracle["running_balances_consistent"].asBoolean() shouldBe true
+        // Oracle `running_balances_consistent: true`: BR-026 on every line, checked by assertReconciled().
         assertReconciled()
         sumOfAmounts() shouldBe 0
 

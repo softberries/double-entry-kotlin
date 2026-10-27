@@ -6,8 +6,7 @@ import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestReporter
-import org.junit.jupiter.api.Timeout
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import kotlin.random.Random
 
 /**
@@ -27,7 +26,6 @@ class JackHammerTest : ConcurrencyIntegrationTest() {
         get() = (0 until JackHammerSettings.ACCOUNTS).map { resolver.account(JackHammerSettings.accountIdentifier(it), scope = 1) }
 
     @Test
-    @Timeout(value = 85, unit = TimeUnit.SECONDS)
     fun `jack hammer with threads and no flush reconciles (jack_hammer_t2000z)`(reporter: TestReporter) {
         val run = jackHammer(balanceFlushCount = 1, reporter = reporter)
 
@@ -35,7 +33,6 @@ class JackHammerTest : ConcurrencyIntegrationTest() {
     }
 
     @Test
-    @Timeout(value = 85, unit = TimeUnit.SECONDS)
     fun `jack hammer with 4 balance flushes recreates the balance rows from the lines (jack_hammer_t2000f4)`(reporter: TestReporter) {
         val run = jackHammer(balanceFlushCount = 4, reporter = reporter)
 
@@ -73,17 +70,20 @@ class JackHammerTest : ConcurrencyIntegrationTest() {
             seed,
         )
         val started = System.nanoTime()
+        // One deadline for the whole run (no fixed @Timeout): it scales with `-Pjackhammer.full`.
+        val deadline = started + JackHammerSettings.timeout.toNanos()
         var maxRowIdBeforeLastFlush = 0L
         var done = 0
         repeat(balanceFlushCount) { flush ->
             maxRowIdBeforeLastFlush = maxBalanceRowId()
             jdbcTemplate.update("DELETE FROM double_entry_account_balances")
             val batch = total / balanceFlushCount + if (flush < total % balanceFlushCount) 1 else 0
-            runInParallel(workers) { worker ->
+            runInParallel(workers, timeout = Duration.ofNanos(maxOf(deadline - System.nanoTime(), 1_000_000))) { worker ->
                 val iterations = batch / workers + if (worker < batch % workers) 1 else 0
                 // `srand` per process in Ruby; a fixed, logged seed per (flush, worker) here, so a failure can be replayed.
                 val random = Random(seed + flush * 1_000L + worker)
                 repeat(iterations) {
+                    if (cancelled) return@runInParallel
                     val from = accounts.random(random)
                     val to = (accounts - from).random(random)
                     transfers.transfer(usd(random.nextLong(1000) + 1), from = from, to = to, code = JackHammerSettings.CODE)
