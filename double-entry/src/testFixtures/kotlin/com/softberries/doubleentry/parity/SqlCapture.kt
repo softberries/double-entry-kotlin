@@ -147,5 +147,34 @@ class SqlCapture {
             }
             return result.map { it.step }
         }
+
+        /**
+         * Removes the `BEGIN`/`COMMIT` around transactions that contain only plain `SELECT`s (no `FOR UPDATE`). Spring
+         * Data runs repository reads (e.g. `Lines.find`) in a read-only transaction where ActiveRecord reads in
+         * autocommit; the wrapper changes neither lock order, `FOR UPDATE` nor the write sequence (D-017). Opt-in for
+         * drivers whose scenarios read lines after writing them; apply it to both sides.
+         */
+        fun withoutReadOnlyTransactions(steps: List<SqlProtocolStep>): List<SqlProtocolStep> {
+            val result = mutableListOf<SqlProtocolStep>()
+            var i = 0
+            while (i < steps.size) {
+                val step = steps[i]
+                val end = steps.indexOfFirstFrom(i + 1) { it.verb in setOf("COMMIT", "ROLLBACK", "BEGIN") }
+                val body = if (step.verb == "BEGIN" && end > i + 1 && steps[end].verb == "COMMIT") steps.subList(i + 1, end) else null
+                if (body != null && body.all { it.verb == "SELECT" && !it.forUpdate }) {
+                    result += body
+                    i = end + 1
+                } else {
+                    result += step
+                    i++
+                }
+            }
+            return result
+        }
+
+        private fun <T> List<T>.indexOfFirstFrom(
+            from: Int,
+            predicate: (T) -> Boolean,
+        ): Int = (from until size).firstOrNull { predicate(this[it]) } ?: -1
     }
 }
