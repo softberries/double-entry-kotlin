@@ -156,7 +156,7 @@ class ConfigAccountParityTest : PostgresIntegrationTest() {
     }
 
     @Test
-    fun `the account toString in an exception renders the TestUser like the oracle renders a User`() {
+    fun `Ruby User addresses in the oracle normalise to the TestUser rendering`() {
         val normalised =
             OutcomeComparator.normaliseUsers(OracleScenarios.load("account_instance_semantics").result) as ObjectNode
         normalised["sorted"].map { it.asText() } shouldContainExactly
