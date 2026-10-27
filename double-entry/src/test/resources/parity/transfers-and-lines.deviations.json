@@ -1,0 +1,38 @@
+{
+  "transfer_amount_currency_differs_from_accounts": {
+    "xRef": "X-07",
+    "kotlinExpectation": "D-013 validate up front: MismatchedCurrencies 'Mismatched currency (BTC <> USD)' before the lock, so no balance rows and no SQL (Ruby: Money::Bank::UnknownRate after committing both balance rows)"
+  },
+  "transfer_amount_currency_differs_first_transfer_zero_balance": {
+    "xRef": "X-07",
+    "kotlinExpectation": "D-013 validate up front: MismatchedCurrencies 'Mismatched currency (EUR <> USD)' before the lock, so no balance rows and no SQL (Ruby: Money::Bank::UnknownRate after committing both balance rows)"
+  },
+  "transfer_integer_amount": {
+    "xRef": "X-07",
+    "kotlinExpectation": "Not expressible (D-013): amount is a required non-null Money, so an Integer amount does not compile; nothing is written (Ruby: TypeError after committing both balance rows)"
+  },
+  "transfer_nil_amount": {
+    "xRef": "X-07",
+    "kotlinExpectation": "Not expressible (D-013): amount is a required non-null Money, so a nil amount does not compile (Ruby: NoMethodError 'negative?')"
+  },
+  "transfer_missing_from": {
+    "xRef": "X-07",
+    "kotlinExpectation": "Not expressible (D-013): from is a required AccountInstance, so the call does not compile (Ruby: NoMethodError 'identifier' for nil)"
+  },
+  "transfer_missing_code": {
+    "xRef": "X-07",
+    "kotlinExpectation": "Not expressible (D-013, as BR-033): code is a required non-null String, so the call does not compile (Ruby: TransferNotAllowed '[:bank, :cash, nil]')"
+  },
+  "transfer_bigint_overflow": {
+    "xRef": "X-07",
+    "kotlinExpectation": "D-013/BR-032: exact Long arithmetic throws ArithmeticException 'long overflow' before the second transfer writes; the same rows and SQL as Ruby remain (Ruby: ActiveModel::RangeError)"
+  },
+  "transfer_string_code": {
+    "xRef": "X-11",
+    "kotlinExpectation": "Proposed X-11 (Symbol/String collapse, D-013 'impossible by typing'): codes are Strings, so code \"salary\" is the configured bank→cash salary transfer and succeeds (two lines) instead of TransferNotAllowed"
+  },
+  "line_direct_create_missing_code": {
+    "xRef": "X-04",
+    "kotlinExpectation": "D-008 SQLSTATE-based classification: NewLine.code is non-null (D-013), so only raw SQL reaches the NOT NULL constraint; it raises Spring DataIntegrityViolationException with SQLSTATE 23502 (Ruby: ActiveRecord::NotNullViolation), same rows and SQL"
+  }
+}
