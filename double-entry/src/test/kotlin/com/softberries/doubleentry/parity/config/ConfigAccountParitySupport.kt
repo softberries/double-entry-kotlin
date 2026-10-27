@@ -8,6 +8,7 @@ import com.softberries.doubleentry.account.AccountDefinition
 import com.softberries.doubleentry.account.AccountInstance
 import com.softberries.doubleentry.account.AccountResolver
 import com.softberries.doubleentry.account.ScopeIdentifier
+import com.softberries.doubleentry.config.DefinitionsConfiguration
 import com.softberries.doubleentry.config.DoubleEntryConfiguration
 import com.softberries.doubleentry.config.DoubleEntryConfigurationBuilder
 import com.softberries.doubleentry.config.DoubleEntryConfigurer
@@ -71,8 +72,8 @@ fun oracleConfiguration(
         extra()
     }
 
-/** The resolver the auto-configuration builds from a configuration (`DefinitionsConfiguration`). */
-fun DoubleEntryConfiguration.resolver(): AccountResolver = AccountResolver(accounts, scopeIdentifierMaxLength)
+/** The resolver the auto-configuration builds from a configuration. */
+fun DoubleEntryConfiguration.resolver(): AccountResolver = DefinitionsConfiguration().doubleEntryAccountResolver(this)
 
 /** The Spring context of [ConfigAccountParityTest]: standard configuration, SQL and notification capture. */
 @TestConfiguration(proxyBeanMethods = false)
